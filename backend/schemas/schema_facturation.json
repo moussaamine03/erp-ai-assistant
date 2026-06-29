@@ -1,0 +1,364 @@
+{
+  "besoin_metier": "Facturation",
+  "description": "Ce schéma couvre toutes les questions liées aux factures et leurs lignes de détail : montants, statuts de règlement, clients, produits facturés, KPIs de chiffre d'affaires.",
+  "vues_disponibles": [
+    {
+      "nom_vue": "vw_facturation",
+      "description": "Vue complète joignant l'entête facture avec ses lignes de détail. Chaque ligne correspond à un article facturé. Utiliser cette vue pour des questions sur le détail des produits, quantités, prix par facture.",
+      "cas_usage": [
+        "Quel est le détail de la facture F-25/018 ?",
+        "Quels produits ont été facturés à AZUR ce mois-ci ?",
+        "Quelle est la quantité totale de l'article X facturé ?",
+        "Quel est le montant HT de chaque ligne de la facture F-24/050 ?"
+      ],
+      "colonnes": {
+        "IDFacture": {
+          "type": "bigint",
+          "description": "Identifiant unique de la facture (clé primaire)",
+          "exemple": 607
+        },
+        "NumeroFacture": {
+          "type": "varchar(20)",
+          "description": "Numéro lisible de la facture au format F-AA/NNN ou F-CMP-AA/NNN pour les factures complémentaires",
+          "exemple": "F-25/048"
+        },
+        "DateFacture": {
+          "type": "date",
+          "description": "Date d'émission de la facture",
+          "exemple": "2025-05-31"
+        },
+        "NomClient": {
+          "type": "varchar(150)",
+          "description": "Nom ou raison sociale du client",
+          "exemple": "Société de Lingerie Azur (SLA)"
+        },
+        "IDClient": {
+          "type": "bigint",
+          "description": "Identifiant du client (relie à la table client si besoin de détails supplémentaires)",
+          "exemple": 6
+        },
+        "AdresseClient": {
+          "type": "varchar(150)",
+          "description": "Adresse du client telle qu'elle figure sur la facture",
+          "exemple": "Cité Erramla - Z.I Ksar Hellal"
+        },
+        "MatriculeFiscal": {
+          "type": "varchar(20)",
+          "description": "Matricule fiscal du client",
+          "exemple": "1205744DAM000"
+        },
+        "TotalHT": {
+          "type": "decimal(24,6)",
+          "description": "Montant total hors taxes de la facture",
+          "exemple": 22748.5
+        },
+        "TotalTVA": {
+          "type": "decimal(24,6)",
+          "description": "Montant total de la TVA",
+          "exemple": 0.0
+        },
+        "TotalTTC": {
+          "type": "decimal(24,6)",
+          "description": "Montant total toutes taxes comprises",
+          "exemple": 22748.5
+        },
+        "RemiseFacture": {
+          "type": "decimal(24,6)",
+          "description": "Remise globale appliquée sur l'entête de la facture (en valeur monétaire)",
+          "exemple": 0.0
+        },
+        "Timbre": {
+          "type": "decimal(24,6)",
+          "description": "Montant du timbre fiscal",
+          "exemple": 0.0
+        },
+        "TotalFodec": {
+          "type": "decimal(24,6)",
+          "description": "Montant total FODEC (Fonds de Développement de la Compétitivité)",
+          "exemple": 0.0
+        },
+        "StatutAcquittement": {
+          "type": "varchar",
+          "description": "Indique si la facture est acquittée ou non. Valeurs : 'Acquittée' ou 'Non acquittée'",
+          "exemple": "Acquittée"
+        },
+        "StatutReglement": {
+          "type": "varchar",
+          "description": "Statut du règlement de la facture. Valeurs : 'Non réglée', 'Partiellement réglée', 'Totalement réglée'",
+          "exemple": "Totalement réglée"
+        },
+        "ResteARegler": {
+          "type": "decimal(24,6)",
+          "description": "Montant restant à régler par le client. 0 si totalement réglée.",
+          "exemple": 0.0
+        },
+        "ModeRèglement": {
+          "type": "varchar(50)",
+          "description": "Mode de paiement utilisé ou prévu",
+          "exemple": "Virement"
+        },
+        "ConditionReglement": {
+          "type": "varchar(100)",
+          "description": "Conditions de règlement de la facture",
+          "exemple": "30 JOURS DATE DE FACTURATION"
+        },
+        "TypeFacture": {
+          "type": "varchar",
+          "description": "Type de document. Valeurs : 'Facture normale', 'Avoir', 'Proforma', 'Facture complémentaire'",
+          "exemple": "Facture normale"
+        },
+        "IDCategorieFacture": {
+          "type": "bigint",
+          "description": "Catégorie interne de la facture (ex: nationale, export, etc.)",
+          "exemple": 1
+        },
+        "Transporteur": {
+          "type": "varchar(50)",
+          "description": "Nom du transporteur pour les expéditions export",
+          "exemple": "Timar"
+        },
+        "PoidsBrut": {
+          "type": "varchar(50)",
+          "description": "Poids brut de l'expédition (texte libre)",
+          "exemple": "355"
+        },
+        "PoidsNet": {
+          "type": "varchar(50)",
+          "description": "Poids net de l'expédition (texte libre)",
+          "exemple": "312"
+        },
+        "Volume": {
+          "type": "varchar(50)",
+          "description": "Volume de l'expédition (texte libre)",
+          "exemple": "2.11"
+        },
+        "NbrColis": {
+          "type": "varchar(50)",
+          "description": "Nombre de colis ou palettes de l'expédition",
+          "exemple": "20"
+        },
+        "SaisiPar": {
+          "type": "varchar(40)",
+          "description": "Utilisateur qui a saisi la facture",
+          "exemple": "riadh"
+        },
+        "SaisiLe": {
+          "type": "date",
+          "description": "Date de saisie de la facture dans le système",
+          "exemple": "2025-05-02"
+        },
+        "ModifiePar": {
+          "type": "varchar(15)",
+          "description": "Dernier utilisateur ayant modifié la facture",
+          "exemple": "riadh"
+        },
+        "ModifieLe": {
+          "type": "date",
+          "description": "Date de dernière modification",
+          "exemple": "2025-05-02"
+        },
+        "Observations": {
+          "type": "longtext",
+          "description": "Observations libres sur la facture (mode de livraison, notes douanières, etc.)",
+          "exemple": "Mode de livraison : C/& Fret - Transporteur : Timar"
+        },
+        "IDLigneFac": {
+          "type": "bigint",
+          "description": "Identifiant unique de la ligne de facture",
+          "exemple": 1245
+        },
+        "IDArticle": {
+          "type": "bigint",
+          "description": "Identifiant de l'article facturé",
+          "exemple": 42
+        },
+        "CodeArticle": {
+          "type": "varchar(50)",
+          "description": "Code article ou référence produit",
+          "exemple": "REF-001"
+        },
+        "DesignationProduit": {
+          "type": "longtext",
+          "description": "Libellé complet du produit tel qu'il figure sur la facture",
+          "exemple": "Soutien-gorge mod. 302 coloris noir taille 85B"
+        },
+        "Quantite": {
+          "type": "double",
+          "description": "Quantité facturée pour cette ligne",
+          "exemple": 188.0
+        },
+        "Quantite2": {
+          "type": "double",
+          "description": "Deuxième quantité (peut représenter un nombre de pièces différent, ex: nombre d'unités vs colis)",
+          "exemple": 0.0
+        },
+        "PrixVente": {
+          "type": "decimal(24,6)",
+          "description": "Prix unitaire de vente hors taxes",
+          "exemple": 15.5
+        },
+        "RemiseLigne": {
+          "type": "float",
+          "description": "Remise en pourcentage appliquée sur cette ligne",
+          "exemple": 0.0
+        },
+        "TauxTVA": {
+          "type": "double",
+          "description": "Taux de TVA applicable à cette ligne (en %)",
+          "exemple": 0.0
+        },
+        "TauxFODEC": {
+          "type": "float",
+          "description": "Taux FODEC applicable (en %)",
+          "exemple": 0.0
+        },
+        "MntFODEC": {
+          "type": "decimal(24,6)",
+          "description": "Montant FODEC calculé pour cette ligne",
+          "exemple": 0.0
+        },
+        "PoidsLigne": {
+          "type": "float",
+          "description": "Poids brut de cet article dans l'expédition",
+          "exemple": 12.5
+        },
+        "PoidsNetLigne": {
+          "type": "float",
+          "description": "Poids net de cet article",
+          "exemple": 11.0
+        },
+        "ValeurTissu": {
+          "type": "decimal(24,6)",
+          "description": "Valeur du tissu utilisé dans la composition du produit",
+          "exemple": 8.5
+        },
+        "ValeurFourniture": {
+          "type": "decimal(24,6)",
+          "description": "Valeur des fournitures utilisées",
+          "exemple": 2.3
+        },
+        "ValeurMP": {
+          "type": "decimal(24,6)",
+          "description": "Valeur totale des matières premières",
+          "exemple": 10.8
+        },
+        "Majoration": {
+          "type": "float",
+          "description": "Taux de majoration appliqué",
+          "exemple": 0.0
+        },
+        "LibBL": {
+          "type": "varchar(20)",
+          "description": "Numéro du bon de livraison associé à cette ligne",
+          "exemple": "BL-25/010"
+        },
+        "Composition": {
+          "type": "varchar(50)",
+          "description": "Composition matière du produit (ex: 90% polyester, 10% élasthanne)",
+          "exemple": "90% PES 10% EA"
+        },
+        "CodeDouane": {
+          "type": "varchar(50)",
+          "description": "Code douanier (nomenclature) du produit pour les factures export",
+          "exemple": "6212.10.90"
+        },
+        "ObservationsLigne": {
+          "type": "longtext",
+          "description": "Observations spécifiques à cette ligne de facture",
+          "exemple": ""
+        },
+        "MontantLigneHT": {
+          "type": "decimal calculé",
+          "description": "Montant HT de la ligne = Quantité × Prix Vente (arrondi à 3 décimales)",
+          "exemple": 2914.0
+        },
+        "MontantLigneApresRemise": {
+          "type": "decimal calculé",
+          "description": "Montant HT après application de la remise ligne",
+          "exemple": 2914.0
+        },
+        "AnneeFacture": {
+          "type": "int calculé",
+          "description": "Année extraite de DateFacture, utile pour les filtres temporels",
+          "exemple": 2025
+        },
+        "MoisFacture": {
+          "type": "int calculé",
+          "description": "Numéro du mois (1-12) extrait de DateFacture",
+          "exemple": 5
+        }
+      }
+    },
+    {
+      "nom_vue": "vw_facturation_entetes",
+      "description": "Vue allégée sans les lignes de détail. Une ligne = une facture. Utiliser pour les questions générales sur les factures, le chiffre d'affaires global, les statuts de règlement, les totaux.",
+      "cas_usage": [
+        "Quelles factures ne sont pas encore réglées ?",
+        "Quel est le chiffre d'affaires du mois de mai 2025 ?",
+        "Combien de factures ont été émises pour le client AZUR cette année ?",
+        "Quelles sont les factures dont le reste à régler est supérieur à 10 000 DT ?",
+        "Quel est le total facturé à SELMARK en 2024 ?",
+        "Liste des factures du mois dernier",
+        "Factures non acquittées de 2025"
+      ],
+      "colonnes_principales": [
+        "IDFacture", "NumeroFacture", "DateFacture", "NomClient", "IDClient",
+        "MatriculeFiscal", "TotalHT", "TotalTTC", "ResteARegler",
+        "StatutAcquittement", "StatutReglement", "TypeFacture",
+        "ModeRèglement", "ConditionReglement", "SaisiPar", "SaisiLe",
+        "Transporteur", "AnneeFacture", "MoisFacture"
+      ]
+    },
+    {
+      "nom_vue": "vw_facturation_kpi_client",
+      "description": "Vue agrégée par client : chiffre d'affaires total, nombre de factures, montant restant à régler. Utiliser pour les analyses de performance par client.",
+      "cas_usage": [
+        "Quel est le chiffre d'affaires total par client ?",
+        "Quel client a le plus grand encours de paiement ?",
+        "Combien de factures a AZUR depuis le début ?",
+        "Quels clients ont des impayés importants ?",
+        "Top 5 des clients par chiffre d'affaires"
+      ],
+      "colonnes_principales": [
+        "IDClient", "NomClient", "NombreFactures", "ChiffreAffairesHT",
+        "ChiffreAffairesTTC", "TotalResteARegler", "NbFacturesAcquittees",
+        "NbFacturesNonAcquittees", "PremiereFacture", "DerniereFacture"
+      ]
+    }
+  ],
+  "exemples_requetes": [
+    {
+      "question": "Quelles factures ne sont pas encore réglées ?",
+      "sql": "SELECT NumeroFacture, DateFacture, NomClient, TotalTTC, ResteARegler FROM vw_facturation_entetes WHERE StatutReglement != 'Totalement réglée' ORDER BY DateFacture DESC;"
+    },
+    {
+      "question": "Quel est le chiffre d'affaires du mois de mai 2025 ?",
+      "sql": "SELECT SUM(TotalHT) AS CA_HT, SUM(TotalTTC) AS CA_TTC, COUNT(*) AS NombreFactures FROM vw_facturation_entetes WHERE AnneeFacture = 2025 AND MoisFacture = 5 AND TypeFacture = 'Facture normale';"
+    },
+    {
+      "question": "Quels produits ont été facturés à AZUR en juin 2025 ?",
+      "sql": "SELECT NumeroFacture, DateFacture, CodeArticle, DesignationProduit, Quantite, PrixVente, MontantLigneHT FROM vw_facturation WHERE NomClient LIKE '%AZUR%' AND AnneeFacture = 2025 AND MoisFacture = 6 ORDER BY DateFacture, NumeroFacture;"
+    },
+    {
+      "question": "Quel est le top 5 des clients par chiffre d'affaires ?",
+      "sql": "SELECT NomClient, NombreFactures, ChiffreAffairesHT, TotalResteARegler FROM vw_facturation_kpi_client ORDER BY ChiffreAffairesHT DESC LIMIT 5;"
+    },
+    {
+      "question": "Détail de la facture F-25/048",
+      "sql": "SELECT NumeroFacture, DateFacture, NomClient, CodeArticle, DesignationProduit, Quantite, PrixVente, MontantLigneHT, TotalHT, TotalTTC, StatutReglement FROM vw_facturation WHERE NumeroFacture = 'F-25/048';"
+    },
+    {
+      "question": "Quel est le total des impayés par client ?",
+      "sql": "SELECT NomClient, TotalResteARegler, NbFacturesNonAcquittees FROM vw_facturation_kpi_client WHERE TotalResteARegler > 0 ORDER BY TotalResteARegler DESC;"
+    }
+  ],
+  "notes_importantes": [
+    "Le champ NomClient (colonne 'Client' dans la table facture) contient le nom tel que saisi, avec parfois des espaces en fin de chaîne — utiliser TRIM() ou LIKE '%nom%' dans les filtres.",
+    "Les factures export (SELMARK, NIAS, Valery, etc.) ont un IDCategorieFacture différent des factures locales.",
+    "Les factures de type 'Facture complémentaire' ont un numéro au format F-CMP-AA/NNN.",
+    "Un TotalHT = 0 peut indiquer une facture de prestation de service ou un bon de travail à zéro.",
+    "EtatReglement : 0=Non réglée, 1=Partiellement réglée, 2=Totalement réglée.",
+    "Acquittée : 1=oui, 0=non. Une facture peut être acquittée sans être totalement réglée (ex: déduction TVA).",
+    "Les colonnes PoidsBrut/PoidsNet/Volume sont des varchar car elles contiennent parfois des unités textuelles dans les données export."
+  ]
+}

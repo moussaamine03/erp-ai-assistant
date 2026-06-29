@@ -1,0 +1,262 @@
+{
+  "besoin_metier": "Achat",
+  "description": "Ce schéma couvre toutes les questions liées aux achats de matières premières : fournisseurs, bons d'achat, lignes de détail (MP), statuts de règlement, KPIs par fournisseur.",
+  "vues_disponibles": [
+    {
+      "nom_vue": "vw_achat",
+      "description": "Vue complète joignant achat + lignes d'achat + fournisseur + matière première. Une ligne = une matière première achetée. Utiliser pour les questions sur le détail des achats (quelles MP achetées, quantités, prix par ligne).",
+      "cas_usage": [
+        "Quelles matières premières ont été achetées dans le bon d'achat BA-25/001 ?",
+        "Quelle est la quantité de tissu X achetée ce mois ?",
+        "Quel est le prix unitaire de la MP Y dans le bon d'achat Z ?",
+        "Quelles MP ont été achetées chez le fournisseur X ?",
+        "Détail des lignes du bon d'achat BA-24/050",
+        "Quelles matières premières de couleur NOIR ont été achetées ?"
+      ],
+      "colonnes": {
+        "IDAchat": {
+          "type": "bigint",
+          "description": "Identifiant unique du bon d'achat",
+          "exemple": 123
+        },
+        "NumeroAchat": {
+          "type": "varchar(20)",
+          "description": "Numéro lisible du bon d'achat",
+          "exemple": "BA-25/001"
+        },
+        "NumeroFactureFournisseur": {
+          "type": "varchar(50)",
+          "description": "Numéro de facture du fournisseur",
+          "exemple": "F-FOUR-2025-001"
+        },
+        "DateAchat": {
+          "type": "date",
+          "description": "Date du bon d'achat",
+          "exemple": "2025-05-15"
+        },
+        "DateFactureFournisseur": {
+          "type": "date",
+          "description": "Date de la facture fournisseur",
+          "exemple": "2025-05-20"
+        },
+        "DateEcheance": {
+          "type": "date",
+          "description": "Date d'échéance de paiement",
+          "exemple": "2025-06-15"
+        },
+        "IDFournisseur": {
+          "type": "bigint",
+          "description": "Identifiant du fournisseur",
+          "exemple": 42
+        },
+        "NomFournisseur": {
+          "type": "varchar(150)",
+          "description": "Nom ou raison sociale du fournisseur",
+          "exemple": "Tissage Mustapha"
+        },
+        "AdresseFournisseur": {
+          "type": "varchar(150)",
+          "description": "Adresse du fournisseur",
+          "exemple": "Zone Industrielle Ksar Hellal"
+        },
+        "PaysFournisseur": {
+          "type": "varchar(50)",
+          "description": "Pays du fournisseur",
+          "exemple": "Tunisie"
+        },
+        "TotalHT": {
+          "type": "decimal(24,6)",
+          "description": "Montant total hors taxes du bon d'achat",
+          "exemple": 15000.0
+        },
+        "TotalTVA": {
+          "type": "decimal(24,6)",
+          "description": "Montant total TVA",
+          "exemple": 2850.0
+        },
+        "TotalTTC": {
+          "type": "decimal(24,6)",
+          "description": "Montant total toutes taxes comprises",
+          "exemple": 17850.0
+        },
+        "ResteARegler": {
+          "type": "decimal(24,6)",
+          "description": "Montant restant à régler au fournisseur",
+          "exemple": 5000.0
+        },
+        "StatutReglement": {
+          "type": "varchar",
+          "description": "Statut du règlement. Valeurs : 'Non réglé', 'Partiellement réglé', 'Totalement réglé'",
+          "exemple": "Totalement réglé"
+        },
+        "TypeAchat": {
+          "type": "varchar",
+          "description": "Type de document. Valeurs : 'Achat normal', 'Avoir', 'Proforma'",
+          "exemple": "Achat normal"
+        },
+        "EtatAchat": {
+          "type": "varchar",
+          "description": "État du bon d'achat. Valeurs : 'Actif' ou 'Inactif'",
+          "exemple": "Actif"
+        },
+        "TotalQtte": {
+          "type": "double",
+          "description": "Quantité totale achetée dans ce bon",
+          "exemple": 500.0
+        },
+        "IDLigneAchat": {
+          "type": "bigint",
+          "description": "Identifiant unique de la ligne d'achat",
+          "exemple": 456
+        },
+        "IDMP": {
+          "type": "bigint",
+          "description": "Identifiant de la matière première",
+          "exemple": 78
+        },
+        "CodeMP": {
+          "type": "varchar(20)",
+          "description": "Code de la matière première",
+          "exemple": "MP-001"
+        },
+        "DesignationMP": {
+          "type": "varchar(50)",
+          "description": "Libellé ou désignation de la matière première",
+          "exemple": "Tissu Jersey 100% Coton"
+        },
+        "Quantite": {
+          "type": "double",
+          "description": "Quantité achetée pour cette ligne",
+          "exemple": 200.0
+        },
+        "PrixUnitaire": {
+          "type": "decimal(24,6)",
+          "description": "Prix unitaire d'achat HT",
+          "exemple": 12.5
+        },
+        "MontantLigneHT": {
+          "type": "decimal calculé",
+          "description": "Montant HT de la ligne = Quantité × Prix unitaire",
+          "exemple": 2500.0
+        },
+        "RemiseLigne": {
+          "type": "float",
+          "description": "Remise en pourcentage sur cette ligne",
+          "exemple": 5.0
+        },
+        "TauxTVA": {
+          "type": "double",
+          "description": "Taux de TVA applicable (en %)",
+          "exemple": 19.0
+        },
+        "CouleurMP": {
+          "type": "varchar(50)",
+          "description": "Couleur de la matière première",
+          "exemple": "NOIR"
+        },
+        "TypeMatiere": {
+          "type": "varchar(50)",
+          "description": "Type ou nature de la matière (tissu, fourniture...)",
+          "exemple": "Tissu"
+        },
+        "CompositionMP": {
+          "type": "varchar(50)",
+          "description": "Composition de la matière première",
+          "exemple": "90% PES 10% EA"
+        },
+        "UniteMP": {
+          "type": "varchar(50)",
+          "description": "Unité de mesure de la matière",
+          "exemple": "Kg"
+        },
+        "AnneeAchat": {
+          "type": "smallint",
+          "description": "Année du bon d'achat",
+          "exemple": 2025
+        },
+        "MoisAchat": {
+          "type": "int",
+          "description": "Numéro du mois (1-12) du bon d'achat",
+          "exemple": 5
+        }
+      }
+    },
+    {
+      "nom_vue": "vw_achat_entetes",
+      "description": "Vue allégée sans le détail des lignes. Une ligne = un bon d'achat. Utiliser pour les questions globales sur les achats (montants, statuts, liste des bons d'achat, encours fournisseur).",
+      "cas_usage": [
+        "Quels achats ne sont pas encore réglés ?",
+        "Quel est le total des achats du mois de mai 2025 ?",
+        "Combien de bons d'achat ont été émis pour le fournisseur X cette année ?",
+        "Quels achats ont un reste à régler supérieur à 10 000 DT ?",
+        "Liste des bons d'achat du mois dernier",
+        "Achats non réglés de 2025",
+        "Quel est le total des achats par fournisseur ?"
+      ],
+      "colonnes_principales": [
+        "IDAchat", "NumeroAchat", "NumeroFactureFournisseur",
+        "DateAchat", "DateFactureFournisseur", "DateEcheance",
+        "IDFournisseur", "NomFournisseur", "PaysFournisseur",
+        "TotalHT", "TotalTTC", "ResteARegler", "TotalQtte",
+        "StatutReglement", "TypeAchat", "EtatAchat",
+        "SaisiPar", "SaisiLe", "AnneeAchat", "MoisAchat"
+      ]
+    },
+    {
+      "nom_vue": "vw_achat_kpi_fournisseur",
+      "description": "Vue agrégée par fournisseur : total achats, encours, nombre de bons d'achat. Utiliser pour les analyses de performance par fournisseur.",
+      "cas_usage": [
+        "Quel est le total des achats par fournisseur ?",
+        "Quel fournisseur a le plus grand encours de paiement ?",
+        "Combien de bons d'achat pour le fournisseur X depuis le début ?",
+        "Quels fournisseurs ont des impayés importants ?",
+        "Top 5 des fournisseurs par volume d'achat",
+        "Quel est le montant total acheté chez chaque fournisseur ?"
+      ],
+      "colonnes_principales": [
+        "IDFournisseur", "NomFournisseur", "PaysFournisseur",
+        "NombreAchats", "TotalAchatsHT", "TotalAchatsTTC",
+        "TotalResteARegler", "MoyenneAchatHT",
+        "NbAchatsReglés", "NbAchatsNonReglés",
+        "PremierAchat", "DernierAchat"
+      ]
+    }
+  ],
+  "exemples_requetes": [
+    {
+      "question": "Quels achats ne sont pas encore réglés ?",
+      "sql": "SELECT NumeroAchat, DateAchat, NomFournisseur, TotalTTC, ResteARegler FROM vw_achat_entetes WHERE StatutReglement = 'Non réglé' ORDER BY DateAchat DESC LIMIT 100;"
+    },
+    {
+      "question": "Quel est le total des achats du mois de mai 2025 ?",
+      "sql": "SELECT SUM(TotalHT) AS TotalAchatsHT, SUM(TotalTTC) AS TotalAchatsTTC, COUNT(*) AS NombreAchats FROM vw_achat_entetes WHERE AnneeAchat = 2025 AND MoisAchat = 5 AND TypeAchat = 'Achat normal';"
+    },
+    {
+      "question": "Quelles matières premières ont été achetées chez Tissage Mustapha ?",
+      "sql": "SELECT DISTINCT CodeMP, DesignationMP, TypeMatiere, CouleurMP, SUM(Quantite) AS QuantiteTotale FROM vw_achat WHERE NomFournisseur LIKE '%Mustapha%' GROUP BY CodeMP, DesignationMP, TypeMatiere, CouleurMP ORDER BY QuantiteTotale DESC LIMIT 100;"
+    },
+    {
+      "question": "Top 5 des fournisseurs par volume d'achat",
+      "sql": "SELECT NomFournisseur, NombreAchats, TotalAchatsHT, TotalResteARegler FROM vw_achat_kpi_fournisseur ORDER BY TotalAchatsHT DESC LIMIT 5;"
+    },
+    {
+      "question": "Détail des lignes du bon d'achat BA-25/001",
+      "sql": "SELECT NumeroAchat, DateAchat, NomFournisseur, CodeMP, DesignationMP, Quantite, PrixUnitaire, MontantLigneHT FROM vw_achat WHERE NumeroAchat = 'BA-25/001' ORDER BY IDLigneAchat LIMIT 100;"
+    },
+    {
+      "question": "Quels fournisseurs ont des impayés importants ?",
+      "sql": "SELECT NomFournisseur, TotalResteARegler, NbAchatsNonReglés, NombreAchats FROM vw_achat_kpi_fournisseur WHERE TotalResteARegler > 0 ORDER BY TotalResteARegler DESC LIMIT 100;"
+    }
+  ],
+  "notes_importantes": [
+    "StatutReglement : 0=Non réglé, 1=Partiellement réglé, 2=Totalement réglé (converti en texte dans les vues).",
+    "TypeAchat : 0=Achat normal, 1=Avoir, 2=Proforma (converti en texte dans les vues).",
+    "EtatAchat : 1=Actif, 0=Inactif.",
+    "Le champ NomFournisseur peut contenir des espaces — utiliser TRIM() ou LIKE '%nom%'.",
+    "La jointure vw_achat utilise INNER JOIN sur fournisseur — les achats sans fournisseur valide sont exclus.",
+    "La jointure avec mp est LEFT JOIN — les lignes sans MP valide restent visibles avec des infos MP nulles.",
+    "MontantLigneHT est calculé : Quantite × PrixUnitaire (arrondi à 3 décimales).",
+    "Pour les analyses globales (CA, totaux), utiliser vw_achat_entetes ou vw_achat_kpi_fournisseur.",
+    "Pour le détail des matières achetées, utiliser vw_achat."
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "besoin_metier": "RH_Production",
+  "description": "Ce schéma couvre les questions RH et production : rendement employés, production par chaîne, avancement des OF, opérations réalisées. Données à partir du 01/01/2025.",
+  "vues_disponibles": [
+    {
+    "nom_vue": "vw_rh_employe",
+    "description": "Vue agrégée par employé et par jour. Contient la production totale, le nombre de lectures, la quantité totale des OF travaillés dans la journée et le rendement journalier de chaque employé. Utiliser pour toutes les questions sur la performance individuelle des employés.",
+    "cas_usage": [
+        "Quelle est la production totale de l'employé BEN ALI ce mois ?",
+        "Top 5 employés par rendement en 2025",
+        "Quel employé a produit le plus de pièces cette semaine ?",
+        "Production journalière de l'employé matricule 568",
+        "Quel est le rendement moyen des employés de la chaîne A ?",
+        "Liste des employés actifs avec leur production ce mois",
+        "Combien d'employés travaillent sur la chaîne B ?",
+        "Comparer la production de deux employés"
+    ],
+    "colonnes_principales": [
+        "IDEmploye", "NomCompletEmploye", "NomEmploye", "PrenomEmploye",
+        "Matricule", "Specialite", "Sexe", "EtatEmploye", "TauxHoraire",
+        "DateEmbauche", "NomChaine", "CodeChaine",
+        "DateLecture", "Annee", "Mois", "Semaine",
+        "TotalPiecesJour", "NbrLectures", "TempsTotal",
+        "TotalQuantiteOF", "RendementPct"
+    ]
+    },
+    {
+    "nom_vue": "vw_rh_chaine",
+    "description": "Vue agrégée par chaîne de montage et par jour. Contient la production totale, la quantité totale des OF travaillés dans la journée et le rendement journalier de chaque chaîne. Utiliser pour les questions sur la performance des chaînes de montage.",
+    "cas_usage": [
+        "Quelle est la production journalière de la chaîne A ?",
+        "Quelle chaîne a le meilleur rendement ce mois ?",
+        
+        "Comparer la production des chaînes A et B",
+        "Quelle est la charge de la chaîne C cette semaine ?",
+        "Production totale par chaîne en 2025"
+    ],
+    "colonnes_principales": [
+        "IDChaineMontage", "NomChaine", "CodeChaine",
+        "DateLecture", "Annee", "Mois", "Semaine",
+        "NumeroOF", "EtatOF",
+         "TotalPiecesJour", "NbrLectures",
+        "TempsTotal", "TotalQuantiteOF", "RendementPct"
+    ]
+    },
+    {
+    "nom_vue": "vw_rh_of",
+    "description": "Vue agrégée par ordre de fabrication et par opération. Contient la production par opération et les périodes de réalisation. Utiliser pour les questions sur les OF et les opérations.",
+    "cas_usage": [
+        "Quelles opérations ont été réalisées sur l'OF X ?",
+        "Combien de pièces ont été produites sur l'OF Z ?",
+        "Quels OF sont en cours sur la chaîne A ?",
+        "Détail des opérations par gamme pour un OF donné",
+        "Quel employé a travaillé sur l'OF X ?",
+        "Temps total réalisé sur l'OF Y par opération"
+    ],
+    "colonnes_principales": [
+        "IDOFabrication", "NumeroOF", "DateDebutOF", "DateFinOF",
+        "QuantitePrevueOF", "QuantiteLanceeOF", "EtatOF",
+        "NomChaine", "IDOperation", "NomOperation", "CodeOperation",
+        "TempsPrevuOperation", "NomGamme", "TempsTotalGamme",
+        "NbrEmployes", "TotalPiecesOperation", "TempsTotalRealise",
+        "PremiereLecture", "DerniereLecture"
+    ]
+    },
+    {
+      "nom_vue": "vw_rh_production",
+      "description": "Vue détail au niveau de chaque lecture (une ligne par lecture). Contient les informations employé, chaîne, OF, opération et gamme, ainsi que la quantité cumulée des lectures par OF et le rendement de l'OF (quantité réalisée cumulée / quantité prévue de l'OF). Utiliser pour les questions détaillées sur les lectures individuelles, l'avancement d'un OF, ou les opérations réalisées.",
+      "cas_usage": [
+        "Détail des lectures de l'employé BEN ALI pour l'OF 10340",
+        "Quel est le rendement de l'OF 10340 ?",
+        "Avancement de production de l'OF 10340",
+        "Liste des opérations réalisées sur la chaîne A aujourd'hui",
+        "Quelle quantité a été produite sur l'OF 10340 jusqu'à présent ?",
+        "Détail des lectures par gamme pour un OF donné",
+        "Historique des lectures d'un employé sur une opération précise"
+      ],
+      "colonnes_principales": [
+        "IDLectures", "DateLecture", "Annee", "Mois", "Semaine",
+        "IDEmploye", "NomCompletEmploye", "NomEmploye", "PrenomEmploye",
+        "Matricule", "Specialite", "Sexe", "EtatEmploye", "TauxHoraire", "DateEmbauche",
+        "IDChaineMontage", "NomChaine", "CodeChaine",
+        "IDOFabrication", "NumeroOF", "DateDebutOF", "DateFinOF", "QuantiteOF", "EtatOF",
+        "IDOperation", "NomOperation", "CodeOperation", "TempsPrevuOperation",
+        "IDGamme", "NomGamme", "TempsTotalGamme", "NbrOperations",
+        "QuantiteRealisee", "TempsRealise", "Taille", "NumTicket", "Majoration",
+        "QuantiteLectureCumulOF", "RendementOFPct",
+        "SaisiPar", "SaisiLe"
+      ]
+    }
+  ],
+  "exemples_requetes": [
+    {
+      "question": "Top 5 employés par rendement en 2025",
+      "sql": "SELECT NomCompletEmploye, Matricule, NomChaine, ROUND(AVG(RendementPct), 2) AS RendementMoyen, SUM(TotalPiecesJour) AS TotalPieces FROM vw_rh_employe WHERE Annee = 2025 GROUP BY IDEmploye, NomCompletEmploye, Matricule, NomChaine ORDER BY RendementMoyen DESC LIMIT 5;"
+    },
+    {
+      "question": "Production journalière de la chaîne A ce mois",
+      "sql": "SELECT DateLecture, NomChaine, TotalPiecesJour, NbrEmployes, RendementPct FROM vw_rh_chaine WHERE TRIM(NomChaine) LIKE '%A%' AND Annee = 2025 AND Mois = 6 ORDER BY DateLecture DESC;"
+    },
+    {
+      "question": "Avancement de l'OF OF-25/001",
+      "sql": "SELECT NumeroOF, EtatOF, NomChaine, SUM(TotalPiecesOperation) AS TotalProduit, QuantitePrevueOF, ROUND(AVG(AvancementPct), 2) AS AvancementMoyen FROM vw_rh_of WHERE TRIM(NumeroOF) LIKE '%OF-25/001%' GROUP BY NumeroOF, EtatOF, NomChaine, QuantitePrevueOF;"
+    },
+    {
+      "question": "Production totale par employé ce mois",
+      "sql": "SELECT NomCompletEmploye, Matricule, NomChaine, SUM(TotalPiecesJour) AS TotalPieces, ROUND(AVG(RendementPct), 2) AS RendementMoyen FROM vw_rh_employe WHERE Annee = 2025 AND Mois = 6 GROUP BY IDEmploye, NomCompletEmploye, Matricule, NomChaine ORDER BY TotalPieces DESC LIMIT 100;"
+    },
+    {
+      "question": "Quelles opérations ont été réalisées sur l'OF X ?",
+      "sql": "SELECT NomOperation, CodeOperation, TotalPiecesOperation, NbrEmployes, RendementPct, TempsPrevuOperation FROM vw_rh_of WHERE TRIM(NumeroOF) = 'OF-25/001' ORDER BY TotalPiecesOperation DESC;"
+    },
+    {
+      "question": "Rendement moyen par chaîne en 2025",
+      "sql": "SELECT NomChaine, CodeChaine, ROUND(AVG(RendementPct), 2) AS RendementMoyen, SUM(TotalPiecesJour) AS TotalPieces, COUNT(DISTINCT DateLecture) AS NbrJours FROM vw_rh_chaine WHERE Annee = 2025 GROUP BY IDChaineMontage, NomChaine, CodeChaine ORDER BY RendementMoyen DESC;"
+    }
+  ],
+  "notes_importantes": [
+    "Toutes les vues filtrent automatiquement les données à partir du 01/01/2025.",
+    "RendementPct = (TempsPrévu × Quantité) / TempsRéalisé × 100 — NULL si données insuffisantes.",
+    "vw_rh_employe et vw_rh_chaine sont déjà agrégées — ne pas ajouter GROUP BY sur IDLectures.",
+    "vw_rh_of est agrégée par OF + opération — idéale pour l'avancement.",
+    "vw_rh_production est la seule vue non agrégée — utiliser uniquement pour le détail ligne par ligne.",
+    "NomCompletEmploye = Nom + Prénom — utiliser LIKE '%nom%' pour la recherche.",
+    "EtatEmploye : 'Actif' ou 'Inactif'.",
+    "EtatOF : 'En cours', 'Terminé', 'Annulé'.",
+    "COLONNES INTERDITES (n'existent pas) : Rendement → RendementPct, MatriculeEmploye → Matricule, QuantiteProduite → QuantiteRealisee ou TotalPiecesJour, DateProduction → DateLecture."
+  ]
+}

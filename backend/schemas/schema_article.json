@@ -1,0 +1,289 @@
+{
+  "besoin_metier": "Article",
+  "description": "Ce schéma couvre toutes les questions liées aux articles textiles : désignation, couleur, famille, tailles, prix, composition, cadence de production et KPIs par famille.",
+  "vues_disponibles": [
+    {
+      "nom_vue": "vw_article",
+      "description": "Vue complète d'un article avec toutes ses informations : couleur, famille, grille de tailles, client associé, fournisseur, prix, composition et caractéristiques de production. Utiliser pour les questions sur un article spécifique ou une recherche détaillée.",
+      "cas_usage": [
+        "Quelles sont les caractéristiques de l'article REF-001 ?",
+        "Montre-moi tous les articles de couleur NOIR",
+        "Quels articles appartiennent à la famille Soutien Gorge ?",
+        "Quel est le prix de l'article X ?",
+        "Quels articles sont associés au client AZUR ?",
+        "Liste des articles actifs avec leur composition",
+        "Quels articles ont une cadence supérieure à 100 ?",
+        "Quels articles sont fournis par le fournisseur Y ?"
+      ],
+      "colonnes": {
+        "IDArticle": {
+          "type": "bigint",
+          "description": "Identifiant unique de l'article",
+          "exemple": 42
+        },
+        "CodeArticle": {
+          "type": "varchar(50)",
+          "description": "Code ou référence interne de l'article",
+          "exemple": "4BF12 GT"
+        },
+        "DesignationArticle": {
+          "type": "longtext",
+          "description": "Désignation complète de l'article",
+          "exemple": "Soutien-gorge mod. 302 coloris noir taille 85B"
+        },
+        "Reference": {
+          "type": "varchar(50)",
+          "description": "Référence externe ou client de l'article",
+          "exemple": "REF-2025-001"
+        },
+        "NomCouleur": {
+          "type": "varchar(50)",
+          "description": "Nom de la couleur de l'article",
+          "exemple": "NOIR"
+        },
+        "CodeCouleur": {
+          "type": "varchar(20)",
+          "description": "Code court de la couleur",
+          "exemple": "NR"
+        },
+        "NomFamille": {
+          "type": "varchar(50)",
+          "description": "Famille produit de l'article (ex: Soutien Gorge, Slip, Maillot de bain...)",
+          "exemple": "Soutien Gorge"
+        },
+        "CodeFamille": {
+          "type": "varchar(10)",
+          "description": "Code court de la famille",
+          "exemple": "SG"
+        },
+        "NomGrille": {
+          "type": "varchar(20)",
+          "description": "Grille de tailles associée à l'article (détermine les tailles disponibles)",
+          "exemple": "Grille soutien"
+        },
+        "NomClient": {
+          "type": "varchar(150)",
+          "description": "Nom du client associé à cet article (article développé pour un client spécifique)",
+          "exemple": "Société de Lingerie Azur (SLA)"
+        },
+     
+        "PrixVente": {
+          "type": "decimal(24,6)",
+          "description": "Prix de vente unitaire de l'article",
+          "exemple": 15.5
+        },
+        "PrixFacturation": {
+          "type": "decimal(24,6)",
+          "description": "Prix utilisé pour la facturation",
+          "exemple": 15.5
+        },
+        "PrixMatieresPremieres": {
+          "type": "decimal(24,6)",
+          "description": "Prix des matières premières utilisées",
+          "exemple": 8.2
+        },
+        "ValeurTissu": {
+          "type": "decimal(24,6)",
+          "description": "Valeur du tissu dans la composition",
+          "exemple": 6.5
+        },
+        "ValeurFourniture": {
+          "type": "decimal(24,6)",
+          "description": "Valeur des fournitures dans la composition",
+          "exemple": 1.7
+        },
+        "ValeurTotalMP": {
+          "type": "decimal(24,6)",
+          "description": "Valeur totale des matières premières",
+          "exemple": 8.2
+        },
+        "PrixEmballage": {
+          "type": "decimal(24,6)",
+          "description": "Prix de l'emballage unitaire",
+          "exemple": 0.5
+        },
+        "TauxTVA": {
+          "type": "double",
+          "description": "Taux de TVA applicable à l'article (en %)",
+          "exemple": 19.0
+        },
+        "PoidsBrut": {
+          "type": "float",
+          "description": "Poids brut de l'article en kg",
+          "exemple": 0.25
+        },
+        "PoidsNet": {
+          "type": "float",
+          "description": "Poids net de l'article en kg",
+          "exemple": 0.22
+        },
+        "Composition": {
+          "type": "longtext",
+          "description": "Composition matière de l'article (ex: 90% polyester, 10% élasthanne)",
+          "exemple": "90% PES 10% EA"
+        },
+        "CodeDouane": {
+          "type": "varchar(50)",
+          "description": "Code douanier (nomenclature) pour les articles export",
+          "exemple": "6212.10.90"
+        },
+        "Cadence": {
+          "type": "float",
+          "description": "Cadence de production en pièces/heure",
+          "exemple": 120.0
+        },
+        "TempsClient": {
+          "type": "float",
+          "description": "Temps de fabrication en minutes selon le client",
+          "exemple": 12.5
+        },
+        "TempsAtelier": {
+          "type": "float",
+          "description": "Temps de fabrication en atelier en minutes",
+          "exemple": 10.0
+        },
+        "TempsUnitaire": {
+          "type": "double",
+          "description": "Temps unitaire de fabrication en minutes",
+          "exemple": 11.0
+        },
+        "NbrPiecesColis": {
+          "type": "int",
+          "description": "Nombre de pièces par colis",
+          "exemple": 12
+        },
+        "NbrColisPalette": {
+          "type": "int",
+          "description": "Nombre de colis par palette",
+          "exemple": 20
+        },
+        "StockMin": {
+          "type": "int",
+          "description": "Seuil minimum de stock à maintenir",
+          "exemple": 50
+        },
+        "StockAlerte": {
+          "type": "int",
+          "description": "Seuil d'alerte stock",
+          "exemple": 100
+        },
+        "EtatArticle": {
+          "type": "varchar",
+          "description": "État de l'article. Valeurs : 'Actif' ou 'Inactif'",
+          "exemple": "Actif"
+        },
+        "TypeProduit": {
+          "type": "varchar",
+          "description": "Type de produit. Valeurs : 'Semi-fini' ou 'Produit fini'",
+          "exemple": "Produit fini"
+        },
+        "NatureArticle": {
+          "type": "varchar",
+          "description": "Nature de l'article. Valeurs : 'Matière première' ou 'Article'",
+          "exemple": "Article"
+        },
+        "NomenclatureValide": {
+          "type": "tinyint",
+          "description": "Indique si la nomenclature de l'article est validée (1=oui, 0=non)",
+          "exemple": 1
+        },
+        "SaisiPar": {
+          "type": "varchar(15)",
+          "description": "Utilisateur ayant créé l'article",
+          "exemple": "riadh"
+        },
+        "SaisiLe": {
+          "type": "date",
+          "description": "Date de création de l'article",
+          "exemple": "2025-01-15"
+        },
+        "ModifiePar": {
+          "type": "varchar(15)",
+          "description": "Dernier utilisateur ayant modifié l'article",
+          "exemple": "admin"
+        },
+        "ModifieLe": {
+          "type": "date",
+          "description": "Date de dernière modification",
+          "exemple": "2025-03-20"
+        },
+        "Observations": {
+          "type": "longtext",
+          "description": "Observations libres sur l'article",
+          "exemple": "Article export SELMARK"
+        }
+      }
+    },
+    {
+      "nom_vue": "vw_article_tailles",
+      "description": "Vue articles avec leurs tailles disponibles selon la grille associée. Chaque ligne = un article + une taille. Utiliser pour les questions sur les tailles disponibles d'un article ou d'une famille.",
+      "cas_usage": [
+        "Quelles tailles sont disponibles pour l'article X ?",
+        "Quels articles existent en taille 85B ?",
+        "Liste des tailles de la grille Soutien Gorge",
+        "Quelles sont les tailles disponibles pour la famille Slip ?",
+        "L'article REF-001 est disponible en quelle taille ?"
+      ],
+      "colonnes_principales": [
+        "IDArticle", "CodeArticle", "DesignationArticle",
+        "NomFamille", "NomCouleur", "NomGrille",
+        "IDGrille", "IdTaille", "Taille", "OrdreTaille", "EtatArticle"
+      ]
+    },
+    {
+      "nom_vue": "vw_article_kpi_famille",
+      "description": "Vue agrégée par famille d'articles : nombre d'articles, prix moyen, cadence moyenne, nombre de couleurs et de clients. Utiliser pour les analyses et statistiques par famille.",
+      "cas_usage": [
+        "Combien d'articles par famille ?",
+        "Quelle famille a le plus grand nombre d'articles ?",
+        "Quel est le prix moyen des Soutiens Gorge ?",
+        "Quelle famille a la meilleure cadence de production ?",
+        "Statistiques des articles par famille",
+        "Combien d'articles actifs dans chaque famille ?"
+      ],
+      "colonnes_principales": [
+        "IDArFamille", "NomFamille", "NombreArticles",
+        "ArticlesActifs", "ArticlesInactifs",
+        "PrixMoyen", "PrixMin", "PrixMax",
+        "CadenceMoyenne", "TempsMoyenClient",
+        "NombreCouleurs", "NombreClients"
+      ]
+    }
+  ],
+  "exemples_requetes": [
+    {
+      "question": "Quels sont les articles actifs de la famille Soutien Gorge ?",
+      "sql": "SELECT CodeArticle, DesignationArticle, NomCouleur, PrixVente, Cadence FROM vw_article WHERE NomFamille LIKE '%Soutien%' AND EtatArticle = 'Actif' ORDER BY CodeArticle LIMIT 100;"
+    },
+    {
+      "question": "Quelles tailles sont disponibles pour l'article 4BF12 GT ?",
+      "sql": "SELECT CodeArticle, DesignationArticle, NomGrille, Taille, OrdreTaille FROM vw_article_tailles WHERE CodeArticle = '4BF12 GT' ORDER BY OrdreTaille;"
+    },
+    {
+      "question": "Combien d'articles actifs par famille ?",
+      "sql": "SELECT NomFamille, NombreArticles, ArticlesActifs, ArticlesInactifs, PrixMoyen FROM vw_article_kpi_famille ORDER BY NombreArticles DESC;"
+    },
+    {
+      "question": "Quels articles sont associés au client AZUR ?",
+      "sql": "SELECT CodeArticle, DesignationArticle, NomFamille, NomCouleur, PrixVente FROM vw_article WHERE NomClient LIKE '%AZUR%' AND EtatArticle = 'Actif' ORDER BY CodeArticle LIMIT 100;"
+    },
+    {
+      "question": "Quels articles existent en taille 85B ?",
+      "sql": "SELECT CodeArticle, DesignationArticle, NomFamille, NomCouleur, NomGrille FROM vw_article_tailles WHERE Taille = '85B' AND EtatArticle = 'Actif' ORDER BY CodeArticle LIMIT 100;"
+    },
+    {
+      "question": "Quelle est la cadence moyenne par famille ?",
+      "sql": "SELECT NomFamille, CadenceMoyenne, TempsMoyenClient, NombreArticles FROM vw_article_kpi_famille ORDER BY CadenceMoyenne DESC;"
+    }
+  ],
+  "notes_importantes": [
+    "La grille détermine les tailles disponibles : chaque article est rattaché à une grille (ex: Grille soutien = tailles 80A, 85A... 125F).",
+    "Un article peut être sans couleur (IDAr_Couleur = 0) ou sans famille (IDArFamille = 0).",
+    "EtatArticle : 1 = Actif, 0 = Inactif. Toujours filtrer sur EtatArticle = 'Actif' sauf demande contraire.",
+    "CodeArticle peut contenir des espaces — utiliser TRIM() ou LIKE '%code%' pour les recherches.",
+    "SemiFini = 1 indique un article semi-fini (composant intermédiaire), SemiFini = 0 = produit fini.",
+    "IsMP = 1 indique une matière première (tissu, fourniture...), pas un article fini.",
+    "La Cadence est en pièces/heure, TempsClient et TempsAtelier sont en minutes.",
+    "Familles disponibles : Soutien Gorge, Slip, Maillot de bain, String, Bikini, Top, T-Shirt, Short, Robe, Body, Burkini, Harnais, Machine, Divers."
+  ]
+}

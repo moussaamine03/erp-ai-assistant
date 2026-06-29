@@ -1,0 +1,212 @@
+{
+  "besoin_metier": "Facturation_Article",
+  "description": "Ce schéma couvre les questions croisant la facturation et les articles : quels articles ont été facturés, à quel client, avec quelle composition, famille ou couleur. Utiliser uniquement quand la question nécessite des informations des deux domaines.",
+  "vues_disponibles": [
+    {
+      "nom_vue": "vw_facturation_detail_article",
+      "description": "Vue croisant les lignes de facture avec les informations détaillées des articles (famille, couleur, grille, composition, valeur matière). Utiliser pour les questions qui nécessitent à la fois des données de facturation ET des caractéristiques articles.",
+      "cas_usage": [
+        "Quels articles de la famille Soutien Gorge ont été facturés ce mois ?",
+        "Quelle est la quantité totale facturée par famille d'articles ?",
+        "Quels articles de couleur NOIR ont été facturés à AZUR ?",
+        "Quel est le chiffre d'affaires par famille d'articles ?",
+        "Quelle est la composition des articles facturés à SELMARK ?",
+        "Quels articles avec code douane X ont été exportés ?",
+        "Quel est le volume facturé par couleur d'article ?",
+        "Quels articles semi-finis ont été facturés cette année ?"
+      ],
+      "colonnes": {
+        "IDFacture": {
+          "type": "bigint",
+          "description": "Identifiant unique de la facture",
+          "exemple": 607
+        },
+        "NumeroFacture": {
+          "type": "varchar(20)",
+          "description": "Numéro lisible de la facture au format F-AA/NNN",
+          "exemple": "F-25/048"
+        },
+        "DateFacture": {
+          "type": "date",
+          "description": "Date d'émission de la facture",
+          "exemple": "2025-05-31"
+        },
+        "NomClient": {
+          "type": "varchar(150)",
+          "description": "Nom du client facturé",
+          "exemple": "Société de Lingerie Azur (SLA)"
+        },
+        "IDClient": {
+          "type": "bigint",
+          "description": "Identifiant du client",
+          "exemple": 6
+        },
+        "TypeFacture": {
+          "type": "varchar",
+          "description": "Type de document. Valeurs : 'Facture normale', 'Avoir', 'Proforma', 'Facture complémentaire'",
+          "exemple": "Facture normale"
+        },
+        "StatutReglement": {
+          "type": "varchar",
+          "description": "Statut du règlement. Valeurs : 'Non réglée', 'Partiellement réglée', 'Totalement réglée'",
+          "exemple": "Totalement réglée"
+        },
+        "StatutAcquittement": {
+          "type": "varchar",
+          "description": "Indique si la facture est acquittée. Valeurs : 'Acquittée' ou 'Non acquittée'",
+          "exemple": "Acquittée"
+        },
+        "AnneeFacture": {
+          "type": "int",
+          "description": "Année extraite de DateFacture",
+          "exemple": 2025
+        },
+        "MoisFacture": {
+          "type": "int",
+          "description": "Numéro du mois (1-12) extrait de DateFacture",
+          "exemple": 5
+        },
+        "IDLigneFac": {
+          "type": "bigint",
+          "description": "Identifiant unique de la ligne de facture",
+          "exemple": 1245
+        },
+        "IDArticle": {
+          "type": "bigint",
+          "description": "Identifiant de l'article facturé",
+          "exemple": 42
+        },
+        "CodeArticle": {
+          "type": "varchar(50)",
+          "description": "Code ou référence de l'article",
+          "exemple": "4BF12 GT"
+        },
+        "DesignationProduit": {
+          "type": "longtext",
+          "description": "Libellé complet du produit sur la facture",
+          "exemple": "Soutien-gorge mod. 302 coloris noir taille 85B"
+        },
+        "Quantite": {
+          "type": "double",
+          "description": "Quantité facturée pour cette ligne",
+          "exemple": 188.0
+        },
+        "PrixVente": {
+          "type": "decimal(24,6)",
+          "description": "Prix unitaire de vente hors taxes",
+          "exemple": 15.5
+        },
+        "MontantLigneHT": {
+          "type": "decimal calculé",
+          "description": "Montant HT de la ligne = Quantité × Prix Vente",
+          "exemple": 2914.0
+        },
+        "TauxTVA": {
+          "type": "double",
+          "description": "Taux de TVA applicable (en %)",
+          "exemple": 0.0
+        },
+        "RemiseLigne": {
+          "type": "float",
+          "description": "Remise en pourcentage sur cette ligne",
+          "exemple": 0.0
+        },
+        "LibBL": {
+          "type": "varchar(20)",
+          "description": "Numéro du bon de livraison associé",
+          "exemple": "BL-25/010"
+        },
+        "NomCouleur": {
+          "type": "varchar(50)",
+          "description": "Couleur de l'article (depuis vw_article)",
+          "exemple": "NOIR"
+        },
+        "NomFamille": {
+          "type": "varchar(50)",
+          "description": "Famille de l'article (depuis vw_article)",
+          "exemple": "Soutien Gorge"
+        },
+        "NomGrille": {
+          "type": "varchar(20)",
+          "description": "Grille de tailles de l'article",
+          "exemple": "Grille soutien"
+        },
+        "Composition": {
+          "type": "longtext",
+          "description": "Composition matière de l'article",
+          "exemple": "90% PES 10% EA"
+        },
+        "CodeDouane": {
+          "type": "varchar(50)",
+          "description": "Code douanier de l'article",
+          "exemple": "6212.10.90"
+        },
+        "PoidsArticle": {
+          "type": "float",
+          "description": "Poids brut unitaire de l'article",
+          "exemple": 0.25
+        },
+        "Cadence": {
+          "type": "float",
+          "description": "Cadence de production en pièces/heure",
+          "exemple": 120.0
+        },
+        "ValeurTissu": {
+          "type": "decimal(24,6)",
+          "description": "Valeur du tissu dans la composition",
+          "exemple": 6.5
+        },
+        "ValeurFourniture": {
+          "type": "decimal(24,6)",
+          "description": "Valeur des fournitures dans la composition",
+          "exemple": 1.7
+        },
+        "ValeurTotalMP": {
+          "type": "decimal(24,6)",
+          "description": "Valeur totale des matières premières",
+          "exemple": 8.2
+        },
+        "TypeProduit": {
+          "type": "varchar",
+          "description": "Type de produit. Valeurs : 'Semi-fini' ou 'Produit fini'",
+          "exemple": "Produit fini"
+        },
+        "NatureArticle": {
+          "type": "varchar",
+          "description": "Nature de l'article. Valeurs : 'Matière première' ou 'Article'",
+          "exemple": "Article"
+        }
+      }
+    }
+  ],
+  "exemples_requetes": [
+    {
+      "question": "Quel est le chiffre d'affaires par famille d'articles en 2025 ?",
+      "sql": "SELECT NomFamille, SUM(Quantite) AS QuantiteTotale, ROUND(SUM(MontantLigneHT), 3) AS CA_HT FROM vw_facturation_detail_article WHERE AnneeFacture = 2025 AND TypeFacture = 'Facture normale' AND NomFamille IS NOT NULL GROUP BY NomFamille ORDER BY CA_HT DESC;"
+    },
+    {
+      "question": "Quels articles de couleur NOIR ont été facturés à AZUR ?",
+      "sql": "SELECT DISTINCT CodeArticle, DesignationProduit, NomFamille, NomCouleur, SUM(Quantite) AS QuantiteTotale FROM vw_facturation_detail_article WHERE NomClient LIKE '%AZUR%' AND NomCouleur LIKE '%NOIR%' GROUP BY CodeArticle, DesignationProduit, NomFamille, NomCouleur ORDER BY QuantiteTotale DESC LIMIT 100;"
+    },
+    {
+      "question": "Quelle est la quantité totale facturée par famille d'articles ce mois ?",
+      "sql": "SELECT NomFamille, COUNT(DISTINCT IDFacture) AS NbFactures, SUM(Quantite) AS QuantiteTotale, ROUND(SUM(MontantLigneHT), 3) AS MontantHT FROM vw_facturation_detail_article WHERE AnneeFacture = 2025 AND MoisFacture = 6 GROUP BY NomFamille ORDER BY QuantiteTotale DESC;"
+    },
+    {
+      "question": "Quelle est la composition des articles facturés à SELMARK ?",
+      "sql": "SELECT DISTINCT CodeArticle, DesignationProduit, NomFamille, Composition FROM vw_facturation_detail_article WHERE NomClient LIKE '%SELMARK%' AND Composition IS NOT NULL ORDER BY CodeArticle LIMIT 100;"
+    },
+    {
+      "question": "Quels articles semi-finis ont été facturés cette année ?",
+      "sql": "SELECT DISTINCT CodeArticle, DesignationProduit, NomFamille, NomCouleur, TypeProduit FROM vw_facturation_detail_article WHERE AnneeFacture = 2025 AND TypeProduit = 'Semi-fini' ORDER BY CodeArticle LIMIT 100;"
+    }
+  ],
+  "notes_importantes": [
+    "Cette vue ne doit être utilisée QUE si la question nécessite des données des deux domaines (facturation ET article).",
+    "Si la question concerne uniquement la facturation → utiliser vw_facturation ou vw_facturation_entetes.",
+    "Si la question concerne uniquement les articles → utiliser vw_article ou vw_article_tailles.",
+    "NomCouleur, NomFamille, NomGrille peuvent être NULL si l'article n'est pas dans vw_article.",
+    "Utiliser LIKE '%valeur%' pour NomClient et NomCouleur car ils peuvent contenir des espaces.",
+    "TypeFacture = 'Facture normale' pour exclure les avoirs et proformas dans les calculs de CA."
+  ]
+}

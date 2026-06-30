@@ -456,9 +456,7 @@ with tab_history:
 
             # Expandeur pour voir SQL et réponse
             with st.expander("Voir détails"):
-                if entry.get("sql"):
-                    st.markdown("**SQL généré :**")
-                    st.code(entry.get("sql"), language="sql")
+                
                 st.markdown("**Réponse :**")
                 st.markdown(entry.get("response", ""))
 

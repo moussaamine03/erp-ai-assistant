@@ -550,6 +550,15 @@ RÈGLE ABSOLUE — COLONNES EXACTES :
   existe EXACTEMENT dans la liste des colonnes du schéma fourni
 - Si tu n'es pas sûr du nom exact → utiliser "*" ou laisser vide
 
+RÈGLE — COMPTAGE EMPLOYÉS :
+- Pour TOUTE question demandant un nombre/comptage d'employés
+  (combien d'employés, nombre d'employés, liste des employés...)
+  → TOUJOURS utiliser la vue vw_rh_employe
+  → JAMAIS utiliser vw_rh_chaine même si la question mentionne une chaîne
+- Exemples :
+  ✅ "Combien d'employés sur la chaîne A ?" → vw_rh_employe (filtrer NomChaine = 'A')
+  ✅ "Nombre d'employés actifs" → vw_rh_employe
+  ❌ "Combien d'employés sur la chaîne A ?" → vw_rh_chaine (INTERDIT)
 
 RÈGLE DE SÉLECTION DES VUES (très important) :
 - utiliser la vue vw_rh_employe pour compter le nombre des employees nest pas vw_rh_chaine

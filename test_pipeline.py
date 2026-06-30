@@ -45,6 +45,7 @@ questions = [
     # "Liste des fournisseurs dont le pays d'origine est la Tunisie",
 
     # # Ventes & Facturation
+    "liste des factures impayées"
     # "Quelle est la famille d'article la plus commandé ?",
     # "Liste des factures de la famille Slip et Bavette",
     # "Liste des factures des clients A.J et Azur",
@@ -66,7 +67,7 @@ questions = [
     # "Nombre d'employés de la chaîne Houda Hajji",
     # "Quel employé a produit le plus de pièces en 2025 ?",
     # "Production hebdomadaire de l'employé BEN SGHAIER Sourour"
-    "Top 5 employés par rendement en 2025"
+    # "Top 5 employés par rendement en 2025"
 
 ]
 

@@ -229,9 +229,7 @@ with st.sidebar:
             st.session_state.dark_mode = False
             st.rerun()
 
-    st.markdown(f'<div class="sidebar-section">📺 Affichage</div>', unsafe_allow_html=True)
-    show_sql  = st.toggle("Afficher le SQL",  value=False)
-    show_view = st.toggle("Afficher la vue",  value=True)
+    
 
     st.markdown(f'<div class="sidebar-section">💡 Suggestions</div>', unsafe_allow_html=True)
     exemples = [
@@ -254,7 +252,7 @@ with st.sidebar:
     <div class="status-item"><span class="dot-active">●</span> Articles</div>
     <div class="status-item"><span class="dot-active">●</span> Achats</div>
     <div class="status-item"><span class="dot-active">●</span> RH / Production</div>
-    <div class="status-item"><span class="dot-soon">●</span> Stock</div>
+   
     """, unsafe_allow_html=True)
 
     st.markdown("---")
@@ -339,12 +337,7 @@ with tab_chat:
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        if show_view and msg.get("view"):
-                            st.markdown(f'<span class="badge-view">⬡ {msg["view"]}</span>',
-                                        unsafe_allow_html=True)
-                        if show_sql and msg.get("sql"):
-                            st.markdown(f'<div class="sql-block">{msg["sql"]}</div>',
-                                        unsafe_allow_html=True)
+                      
 
     # ── Input ─────────────────────────────────────────────────
     st.markdown("---")

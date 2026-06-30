@@ -2,9 +2,11 @@ from backend.llm.llm1 import analyze_intent
 from backend.llm.llm2 import generate_sql
 
 questions = [
-    "Quel est le chiffre d'affaires total du client Dupont ?",
-    "Montre-moi les détails des articles de la facture F-25/048",
-    "Quelles sont les factures impayées ?",
+    # "Quel est le chiffre d'affaires total du client Dupont ?",
+    # "Montre-moi les détails des articles de la facture F-25/048",
+    # "Quelles sont les factures impayées ?",
+     "Nombre d'employés de la chaîne Houda Hajji",
+
 ]
 
 for q in questions:

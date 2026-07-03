@@ -119,14 +119,14 @@ INTERDICTIONS ABSOLUES :
 
 SI aucun domaine pertinent n'existe dans {schemasum} pour répondre à la question :
 → NE PAS forcer une proposition incompatible.
-→ Retourner une liste de propositions VIDE plutôt qu'une proposition hors-périmètre.
+
 
 VALIDATION FINALE (auto-contrôle avant de répondre) :
 Pour CHAQUE proposition générée, vérifier :
   ✅ Le domaine cité existe dans {schemasum} ?
   ✅ Chaque champ mentionné existe dans le schéma de ce domaine ?
   Si la réponse est NON à l'une de ces deux questions → SUPPRIMER la proposition.
-  
+
 Réponds UNIQUEMENT en JSON valide avec cette structure :
 {{
     "type": "vague",
@@ -492,6 +492,51 @@ def analyze_intent(user_question: str) -> dict:
     system_prompt = f"""Tu es un assistant expert en ERP textile.
 Tu analyses les questions des utilisateurs et tu identifies la vue SQL la plus adaptée.
 
+⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️ TRES IMPORTANT ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+⚠️⚠️⚠️ RÈGLE ABSOLUE — COLONNES EXACTES (CRITIQUE) ⚠️⚠️⚠️
+═══════════════════════════════════════════════════════════
+AVANT de remplir "columns_needed" ou "filters", tu DOIS :
+
+ÉTAPE 1 — LIRE la liste "Colonnes disponibles" de la vue choisie
+ÉTAPE 2 — VÉRIFIER que chaque colonne existe MOT POUR MOT dans cette liste
+ÉTAPE 3 — Si une colonne n'existe pas → CHERCHER le nom exact dans la liste ou le nom semble proche 
+ÉTAPE 4 — Si aucun nom correspondant → NE PAS L'INCLURE, utiliser "*"
+
+INTERDICTIONS ABSOLUES :
+❌ JAMAIS inventer une colonne absente de "Colonnes disponibles"
+❌ JAMAIS abréger (ex: DateFacture → Date)
+❌ JAMAIS renommer (ex: RendementPct → Rendement)
+❌ JAMAIS utiliser une colonne d'une AUTRE vue
+❌ JAMAIS mettre DateFacture dans vw_facturation_kpi_client
+❌ JAMAIS mettre DateAchat dans vw_achat_kpi_fournisseur
+❌ JAMAIS mettre une colonne de date dans une vue KPI agrégée
+
+RÈGLE SPÉCIALE — VUES KPI (vw_*_kpi_*) :
+Ces vues N'ONT PAS de colonne de date détaillée (DateFacture, DateAchat...).
+Elles contiennent UNIQUEMENT : PremiereFacture/PremierAchat et DerniereFacture/DernierAchat.
+→ Si la question contient un filtre temporel précis (année, mois, période) :
+   ✅ vw_facturation_kpi_client  → basculer vers vw_facturation_entetes
+   ✅ vw_achat_kpi_fournisseur   → basculer vers vw_achat_entetes
+   ✅ vw_article_kpi_famille     → basculer vers vw_article
+→ Les vues KPI sont UNIQUEMENT pour les agrégations SANS filtre temporel précis.
+
+VÉRIFICATION FINALE OBLIGATOIRE :
+Avant de retourner le JSON, relire chaque colonne dans "columns_needed" et "filters"
+et confirmer qu'elle existe EXACTEMENT dans "Colonnes disponibles".
+Si une seule colonne est incorrecte → CORRIGER avant de répondre.
+═══════════════════════════════════════════════════════════
+- Exemples INTERDITS :
+  gamme → toujours utiliser "NomGamme" (jamais CodeGamme)
+  rendement → toujours utiliser "RendementPct" (jamais Rendement, TauxRendement)
+  MatriculeEmploye → utiliser "Matricule"
+  of → utiliser "NumeroOF"
+  NomArticle       → utiliser "DesignationArticle"
+  QuantiteProduite → utiliser "QuantiteRealisee"
+  DateAchat        → vérifier le nom exact dans le schéma
+- Avant de mettre une colonne dans "columns_needed", vérifier qu'elle
+  existe EXACTEMENT dans la liste des colonnes du schéma fourni
+- Si tu n'es pas sûr du nom exact → utiliser "*" ou laisser vide
+
 - ⚠️⚠️ RÈGLE CRITIQUE — GROUP BY OBLIGATOIRE (NE JAMAIS IGNORER) :
   AVANT de générer les filters, TOUJOURS vérifier :
   "Est-ce une vue de détail avec une question sur une entité globale ?"
@@ -554,55 +599,6 @@ RÈGLE — COLONNES EXACTES PAR VUE RH :
 ⚠️ Ne JAMAIS mettre "QuantiteRealisee" dans columns_needed si la vue 
    est vw_rh_employe, vw_rh_chaine ou vw_rh_of
 
-RÈGLE ABSOLUE — COLONNES EXACTES :
-- ⚠️ VALEURS EXACTES : utiliser UNIQUEMENT les valeurs décrites dans le schéma fourni
-  Ne jamais inventer des valeurs absentes du schéma
-- Le champ "columns_needed" doit contenir UNIQUEMENT les noms de colonnes
-  EXACTEMENT tels qu'ils figurent dans la liste "Colonnes disponibles" 
-  de la vue choisie ci-dessus
-⚠️⚠️⚠️ RÈGLE ABSOLUE — COLONNES EXACTES (CRITIQUE) ⚠️⚠️⚠️
-═══════════════════════════════════════════════════════════
-AVANT de remplir "columns_needed" ou "filters", tu DOIS :
-
-ÉTAPE 1 — LIRE la liste "Colonnes disponibles" de la vue choisie
-ÉTAPE 2 — VÉRIFIER que chaque colonne existe MOT POUR MOT dans cette liste
-ÉTAPE 3 — Si une colonne n'existe pas → CHERCHER le nom exact dans la liste
-ÉTAPE 4 — Si aucun nom correspondant → NE PAS L'INCLURE, utiliser "*"
-
-INTERDICTIONS ABSOLUES :
-❌ JAMAIS inventer une colonne absente de "Colonnes disponibles"
-❌ JAMAIS abréger (ex: DateFacture → Date)
-❌ JAMAIS renommer (ex: RendementPct → Rendement)
-❌ JAMAIS utiliser une colonne d'une AUTRE vue
-❌ JAMAIS mettre DateFacture dans vw_facturation_kpi_client
-❌ JAMAIS mettre DateAchat dans vw_achat_kpi_fournisseur
-❌ JAMAIS mettre une colonne de date dans une vue KPI agrégée
-
-RÈGLE SPÉCIALE — VUES KPI (vw_*_kpi_*) :
-Ces vues N'ONT PAS de colonne de date détaillée (DateFacture, DateAchat...).
-Elles contiennent UNIQUEMENT : PremiereFacture/PremierAchat et DerniereFacture/DernierAchat.
-→ Si la question contient un filtre temporel précis (année, mois, période) :
-   ✅ vw_facturation_kpi_client  → basculer vers vw_facturation_entetes
-   ✅ vw_achat_kpi_fournisseur   → basculer vers vw_achat_entetes
-   ✅ vw_article_kpi_famille     → basculer vers vw_article
-→ Les vues KPI sont UNIQUEMENT pour les agrégations SANS filtre temporel précis.
-
-VÉRIFICATION FINALE OBLIGATOIRE :
-Avant de retourner le JSON, relire chaque colonne dans "columns_needed" et "filters"
-et confirmer qu'elle existe EXACTEMENT dans "Colonnes disponibles".
-Si une seule colonne est incorrecte → CORRIGER avant de répondre.
-═══════════════════════════════════════════════════════════
-- Exemples INTERDITS :
-  gamme → toujours utiliser "NomGamme" (jamais CodeGamme)
-  rendement → toujours utiliser "RendementPct" (jamais Rendement, TauxRendement)
-  MatriculeEmploye → utiliser "Matricule"
-  of → utiliser "NumeroOF"
-  NomArticle       → utiliser "DesignationArticle"
-  QuantiteProduite → utiliser "QuantiteRealisee"
-  DateAchat        → vérifier le nom exact dans le schéma
-- Avant de mettre une colonne dans "columns_needed", vérifier qu'elle
-  existe EXACTEMENT dans la liste des colonnes du schéma fourni
-- Si tu n'es pas sûr du nom exact → utiliser "*" ou laisser vide
 
 RÈGLE — COMPTAGE EMPLOYÉS :
 - Pour TOUTE question demandant un nombre/comptage d'employés
@@ -652,6 +648,8 @@ RÈGLE ABSOLUE — AUCUNE CONDITION SUPPLÉMENTAIRE :
 - "filters" doit contenir UNIQUEMENT les conditions EXPLICITEMENT mentionnées
 - Ne JAMAIS ajouter statut, date, état non demandés par l'utilisateur
 
+
+       
 DÉTECTION DE QUESTION VAGUE :
 Une question est VAGUE uniquement si elle est très courte et sans contexte
 (ex: "les factures", "les articles", "montre moi quelque chose").
@@ -664,6 +662,24 @@ Une question est VAGUE uniquement si elle est très courte et sans contexte
 - Un statut (impayé, réglé, actif...)
 - Toute valeur spécifique même si le format est inhabituel
 
+DÉTECTION DE QUESTION HORS PÉRIMÈTRE :
+⚠️ Une question est HORS PÉRIMÈTRE uniquement si elle contient une intention
+explicite de modification ou de suppression de données/système.
+
+MOTS-CLÉS DÉCLENCHEURS (liste non exhaustive, à adapter) :
+- "modifier", "modifie", "modification"
+- "supprimer", "supprime", "suppression"
+- (optionnel selon votre cas d'usage) : "effacer", "éditer", "changer",
+  "mettre à jour", "update", "delete", "remove", "edit"
+
+RÈGLE :
+    si (mot_clé_declencheur présent dans la question, insensible à la casse) :
+        → marquer comme HORS PÉRIMÈTRE
+        → ne pas laisser le LLM exécuter l'action
+        → répondre avec un message de refus / redirection standard
+    sinon :
+        → NE PAS marquer comme hors périmètre
+        → laisser le LLM traiter la question normalement,
 Si vague → retourner {{"vague": true}}
 Si hors périmètre → retourner {{"error": "hors périmètre"}}
 

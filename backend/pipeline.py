@@ -359,19 +359,25 @@ def ask(question: str) -> dict:
         }
 
     except Exception as e:
+        # Message technique détaillé → uniquement dans le log
+        error_detail = f"❌ Erreur : {str(e)}"
+
+        # Message générique → renvoyé à l'utilisateur
+        user_message = "⚠️ Un problème est survenu. Veuillez contacter l'administration."
+
         save_to_log({
             "success": False,
             "question": question,
             "view": None,
             "sql": None,
-            "response": f"❌ Erreur : {str(e)}"
+            "response":error_detail
         })
         return {
             "success": False,
             "question": question,
             "view": None,
             "sql": None,
-            "response": f"❌ Erreur : {str(e)}"
+            "response": user_message
         }
     
 

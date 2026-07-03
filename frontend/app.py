@@ -339,19 +339,20 @@ with tab_chat:
                         
                       
 
-    # ── Input ─────────────────────────────────────────────────
+# ── Input ─────────────────────────────────────────────────
     st.markdown("---")
-    col1, col2 = st.columns([6, 1])
-    with col1:
-        question = st.text_input(
-            "question",
-            value=st.session_state.pending_question,
-            placeholder="Ex : Quelles sont les factures impayées ?",
-            label_visibility="collapsed",
-            key="chat_input"
-        )
-    with col2:
-        send = st.button("Envoyer ↗", use_container_width=True)
+    with st.form(key="chat_form", clear_on_submit=True):
+        col1, col2 = st.columns([6, 1])
+        with col1:
+            question = st.text_input(
+                "question",
+                value=st.session_state.pending_question,
+                placeholder="Ex : Quelles sont les factures impayées ?",
+                label_visibility="collapsed",
+                key="chat_input"
+            )
+        with col2:
+            send = st.form_submit_button("Envoyer ↗", use_container_width=True)
 
     # Auto-envoyer suggestion
     if st.session_state.pending_question and st.session_state.pending_question == question:

@@ -453,7 +453,7 @@ def analyze_intent(user_question: str) -> dict:
     schemas_summary = build_schemas_summary(schemas)
 
     # Extraire les colonnes disponibles depuis le schéma
-    colonnes_disponibles_pourllm1 = ""
+    colonnes_disponibles = ""
     if "colonnes" in schemas:
         for col, info in schemas["colonnes"].items():
             colonnes_disponibles += f"  - {col} ({info['type']}) : {info['description']}\n"
@@ -533,11 +533,38 @@ RÈGLE ABSOLUE — COLONNES EXACTES :
 - Le champ "columns_needed" doit contenir UNIQUEMENT les noms de colonnes
   EXACTEMENT tels qu'ils figurent dans la liste "Colonnes disponibles" 
   de la vue choisie ci-dessus
-- ⚠️ Avant de mettre une colonne dans "columns_needed" ou dans "filters" :
-  → Vérifier qu'elle existe EXACTEMENT dans "Colonnes disponibles"
-  → Si elle n'existe pas → chercher le nom correct dans la liste
-  → Si aucun nom correspondant → ne pas l'inclure
-- Ne JAMAIS inventer, abréger ou renommer une colonne
+⚠️⚠️⚠️ RÈGLE ABSOLUE — COLONNES EXACTES (CRITIQUE) ⚠️⚠️⚠️
+═══════════════════════════════════════════════════════════
+AVANT de remplir "columns_needed" ou "filters", tu DOIS :
+
+ÉTAPE 1 — LIRE la liste "Colonnes disponibles" de la vue choisie
+ÉTAPE 2 — VÉRIFIER que chaque colonne existe MOT POUR MOT dans cette liste
+ÉTAPE 3 — Si une colonne n'existe pas → CHERCHER le nom exact dans la liste
+ÉTAPE 4 — Si aucun nom correspondant → NE PAS L'INCLURE, utiliser "*"
+
+INTERDICTIONS ABSOLUES :
+❌ JAMAIS inventer une colonne absente de "Colonnes disponibles"
+❌ JAMAIS abréger (ex: DateFacture → Date)
+❌ JAMAIS renommer (ex: RendementPct → Rendement)
+❌ JAMAIS utiliser une colonne d'une AUTRE vue
+❌ JAMAIS mettre DateFacture dans vw_facturation_kpi_client
+❌ JAMAIS mettre DateAchat dans vw_achat_kpi_fournisseur
+❌ JAMAIS mettre une colonne de date dans une vue KPI agrégée
+
+RÈGLE SPÉCIALE — VUES KPI (vw_*_kpi_*) :
+Ces vues N'ONT PAS de colonne de date détaillée (DateFacture, DateAchat...).
+Elles contiennent UNIQUEMENT : PremiereFacture/PremierAchat et DerniereFacture/DernierAchat.
+→ Si la question contient un filtre temporel précis (année, mois, période) :
+   ✅ vw_facturation_kpi_client  → basculer vers vw_facturation_entetes
+   ✅ vw_achat_kpi_fournisseur   → basculer vers vw_achat_entetes
+   ✅ vw_article_kpi_famille     → basculer vers vw_article
+→ Les vues KPI sont UNIQUEMENT pour les agrégations SANS filtre temporel précis.
+
+VÉRIFICATION FINALE OBLIGATOIRE :
+Avant de retourner le JSON, relire chaque colonne dans "columns_needed" et "filters"
+et confirmer qu'elle existe EXACTEMENT dans "Colonnes disponibles".
+Si une seule colonne est incorrecte → CORRIGER avant de répondre.
+═══════════════════════════════════════════════════════════
 - Exemples INTERDITS :
   gamme → toujours utiliser "NomGamme" (jamais CodeGamme)
   rendement → toujours utiliser "RendementPct" (jamais Rendement, TauxRendement)
@@ -571,7 +598,7 @@ RÈGLE DE SÉLECTION DES VUES (très important) :
 - vw_achat_kpi_fournisseur → analyses par fournisseur (CA, encours, top fournisseurs)
 - vw_facturation → uniquement si la question concerne le DÉTAIL des lignes (articles, quantités, prix par ligne)
 - vw_facturation_entetes → si la question concerne les factures globalement (statut, montant total, liste, impayés, dates)
-- vw_facturation_kpi_client → si la question concerne une ANALYSE ou AGRÉGATION par client (CA total, encours, top clients)
+- vw_facturation_kpi_client → si la question concerne une ANALYSE ou AGRÉGATION par client (CA total, encours, top clients) MAIS attention si la question contient filtre par date utiliser la vue vw_facturation_entetes
 - vw_article → si la question concerne les caractéristiques d'un article spécifique
 - vw_article_tailles → si la question concerne les tailles disponibles d'un article
 - vw_article_kpi_famille → si la question concerne des statistiques par famille d'articles mais sil y a des information lié aux commande utilise la vue vw_facturation_detail_article 
@@ -581,7 +608,18 @@ RÈGLE DE SÉLECTION DES VUES (très important) :
   ✅ "articles facturés de la famille X"
   ✅ "factures contenant des articles de couleur X"
   ✅ Toute question combinant famille/couleur/article AVEC factures
-  
+  ✅ "top articles par CA" → CA par article (pas par client)
+  ✅ "chiffre d'affaires par article" → agrégation par article
+  ✅ "articles les plus vendus" → quantité/CA par article
+  ✅ "top articles par quantité facturée"
+
+⚠️ DISTINCTION IMPORTANTE :
+- Question sur les CLIENTS → vw_facturation_kpi_client
+  ✅ "top clients par CA", "CA par client", "client AZUR"
+- Question sur les ARTICLES → vw_facturation_detail_article
+  ✅ "top articles par CA", "CA par article", "articles les plus vendus"
+- Ne JAMAIS utiliser vw_facturation_kpi_client si la question parle d'articles
+- Ne JAMAIS utiliser vw_facturation_detail_article si la question parle uniquement de clients
 
 RÈGLE ABSOLUE — AUCUNE CONDITION SUPPLÉMENTAIRE :
 - "filters" doit contenir UNIQUEMENT les conditions EXPLICITEMENT mentionnées
@@ -605,7 +643,7 @@ Si hors périmètre → retourner {{"error": "hors périmètre"}}
 Vues disponibles :
 {schemas_summary}
 Colonnes disponibles :
-{colonnes_disponibles_pourllm1}
+{colonnes_disponibles}
 
 
 Tu dois répondre UNIQUEMENT en JSON valide avec cette structure :
@@ -649,12 +687,29 @@ Règles importantes :
     # Enrichir avec le schéma complet de la vue choisie
     if "view" in result and "error" not in result:
         result["schema"] = get_vue_schema(schemas, result["view"])
+
+    # ✅ Extraire les colonnes disponibles depuis le schéma de la vue choisie
+        vue_schema = result["schema"]
+        if "colonnes" in vue_schema:
+            colonnes_disponibles = "\n".join(
+                f"  - {col} ({info['type']}) : {info['description']}"
+                for col, info in vue_schema["colonnes"].items()
+            )
+        elif "colonnes_principales" in vue_schema:
+            colonnes_disponibles = "\n".join(
+                f"  - {col}" for col in vue_schema["colonnes_principales"]
+            )        
         unknown = check_unknown_entities(result)
         if unknown:
             return {
                 "type":    "unknown_entities",
                 "unknown": unknown,
                 "analysis": result  # Garder l'analyse pour après validation
-            }        
-
+            }     
+           
+    if colonnes_disponibles:
+        print(colonnes_disponibles)
+    else :
+        print('chaaaay') 
+   
     return result

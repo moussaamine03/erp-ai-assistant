@@ -5,7 +5,8 @@ questions = [
     # "Quel est le chiffre d'affaires total du client Dupont ?",
     # "Montre-moi les détails des articles de la facture F-25/048",
     # "Quelles sont les factures impayées ?",
-     "Nombre d'employés de la chaîne Houda Hajji",
+    #  "Nombre d'employés de la chaîne Houda Hajji",
+    "Quel est le chiffre d'affaires total facturé à AZUR en 2025",
 
 ]
 

@@ -291,7 +291,7 @@
     },
     {
       "nom_vue": "vw_facturation_entetes",
-      "description": "Vue allégée sans les lignes de détail. Une ligne = une facture. Utiliser pour les questions générales sur les factures, le chiffre d'affaires global, les statuts de règlement, les totaux.",
+      "description": "Vue allégée sans les lignes de détail. Une ligne = une facture. Utiliser pour les questions générales sur les factures, le chiffre d'affaires global, les statuts de règlement, les totaux, CA AVEC DATE PRECIS.",
       "cas_usage": [
         "Quelles factures ne sont pas encore réglées ?",
         "Quel est le chiffre d'affaires du mois de mai 2025 ?",

@@ -10,7 +10,9 @@ questions = [
     # "Quel est le rendement moyen par chaîne de montage ?",
     # 'Quelle est la production journalière de la chaîne Houda Hajji ?',
 # "Quelle gamme est la plus produite cette année ?",
- "Nombre d'employés de la chaîne Houda Hajji",
+#  "Nombre d'employés de la chaîne Houda Hajji",
+# "donne moi la liste des top 10 article en CA",
+"Quel est le chiffre d'affaires total facturé à AZUR en 2025",
 ]
 
 
@@ -21,11 +23,12 @@ for q in questions:
     print(f"✅ Vue choisie : {result.get('view')}")
     print(f"✅ Intent : {result.get('intent')}")
     print(f"🔍 Filters : {result.get('filters')}")
+    print(f"🔍 Filters : {result.get('schema')}")
 from backend.llm.llm1 import analyze_intent
 
-result = analyze_intent("Quelle est la quantité produite par opération en 2025?")
-print(f"🔍 Vue     : {result.get('view')}")
-print(f"🔍 Filters : {result.get('filters')}")
-print(f"🔍 Columns : {result.get('columns_needed')}")
+# result = analyze_intent("Quelle est la quantité produite par opération en 2025?")
+# print(f"🔍 Vue     : {result.get('view')}")
+# print(f"🔍 Filters : {result.get('filters')}")
+# print(f"🔍 Columns : {result.get('columns_needed')}")
 
 

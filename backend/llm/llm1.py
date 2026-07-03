@@ -77,6 +77,7 @@ def get_all_exemples(schemas: dict) -> str:
 
 def handle_vague_question(user_question: str, schemas: dict) -> dict:
     exemples_str = get_all_exemples(schemas)
+    schemasum=build_schemas_summary(schemas)
 
     system_prompt = f"""Tu es un assistant ERP expert en textile.
 Tu reçois une question vague d'un utilisateur.
@@ -100,6 +101,32 @@ RÈGLES IMPORTANTES :
 Exemples de questions disponibles dans le système :
 {exemples_str}
 
+🔴 RÈGLE CRITIQUE — COMPATIBILITÉ DES PROPOSITIONS AVEC LES SCHÉMAS :
+
+Voici la liste EXHAUSTIVE des domaines/vues disponibles avec leurs schémas :
+{schemasum}
+
+OBLIGATOIRE :
+1. Chaque proposition générée DOIT correspondre à un domaine RÉELLEMENT présent dans {schemasum} ci-dessus.
+2. Chaque proposition DOIT utiliser UNIQUEMENT des colonnes/champs qui existent explicitement dans le schéma du domaine concerné.
+3. Avant de générer une proposition, vérifier mentalement : "Ce domaine existe-t-il dans {schemasum} ? Ce champ existe-t-il dans ce schéma précis ?"
+
+INTERDICTIONS ABSOLUES :
+❌ NE JAMAIS proposer une question sur un domaine absent de {schemasum}.
+❌ NE JAMAIS halluciner un champ, une colonne ou un domaine qui n'est pas explicitement listé.
+❌ NE JAMAIS mélanger des champs de deux schémas différents dans une seule proposition.
+❌ NE JAMAIS proposer un domaine "probable" ou "logique" s'il n'apparaît pas littéralement dans {schemasum}.
+
+SI aucun domaine pertinent n'existe dans {schemasum} pour répondre à la question :
+→ NE PAS forcer une proposition incompatible.
+→ Retourner une liste de propositions VIDE plutôt qu'une proposition hors-périmètre.
+
+VALIDATION FINALE (auto-contrôle avant de répondre) :
+Pour CHAQUE proposition générée, vérifier :
+  ✅ Le domaine cité existe dans {schemasum} ?
+  ✅ Chaque champ mentionné existe dans le schéma de ce domaine ?
+  Si la réponse est NON à l'une de ces deux questions → SUPPRIMER la proposition.
+  
 Réponds UNIQUEMENT en JSON valide avec cette structure :
 {{
     "type": "vague",

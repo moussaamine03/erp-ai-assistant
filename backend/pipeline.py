@@ -9,44 +9,55 @@ from backend.llm.rate_limiter import mistral_limiter
 from backend.llm.llm1 import check_period_availability
 import os
 from datetime import datetime
+import time 
 
 load_dotenv()
 
 client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
-LOG_FILE = os.path.join(os.path.dirname(__file__), "../logs/ask_history.json")
+LOG_DIR = os.path.join(os.path.dirname(__file__), "../logs")
+
+def get_log_file_path():
+    """
+    Retourne le chemin du fichier de log du jour.
+    Ex : logs/ask_history_2026-07-03.json
+    """
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    return os.path.join(LOG_DIR, f"ask_history_{today_str}.json")
 
 def save_to_log(result: dict):
     """
-    Sauvegarde chaque interaction dans un fichier JSON.
+    Sauvegarde chaque interaction dans un fichier JSON distinct par jour.
     """
-    # Créer le dossier logs si inexistant
-    os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+    log_file = get_log_file_path()
 
-    # Charger l'historique existant
+    # Créer le dossier logs si inexistant
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+    # Charger l'historique du jour existant
     history = []
-    if os.path.exists(LOG_FILE):
+    if os.path.exists(log_file):
         try:
-            with open(LOG_FILE, "r", encoding="utf-8") as f:
+            with open(log_file, "r", encoding="utf-8") as f:
                 history = json.load(f)
         except Exception:
             history = []
 
     # Ajouter la nouvelle entrée
     entry = {
-        "timestamp":  datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "question":   result.get("question"),
-        "view":       result.get("view"),
-        "sql":        result.get("sql"),
-        "success":    result.get("success"),
-        "nb_results": len(result.get("results", []) or []),
-        "response":   result.get("response")
+        "timestamp":     datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "question":      result.get("question"),
+        "view":          result.get("view"),
+        "sql":           result.get("sql"),
+        "success":       result.get("success"),
+        "nb_results":    len(result.get("results", []) or []),
+        "temps_reponse": result.get("temps_reponse"),
+        "response":      result.get("response")
     }
     history.append(entry)
 
-    # Sauvegarder
-    with open(LOG_FILE, "w", encoding="utf-8") as f:
+    # Sauvegarder dans le fichier du jour
+    with open(log_file, "w", encoding="utf-8") as f:
         json.dump(history, f, ensure_ascii=False, indent=2, default=str)
-
 def is_multiple_entities(analysis: dict) -> bool:
     """Détecte si la question concerne plusieurs entités"""
     intent  = analysis.get("intent", "").lower()
@@ -182,6 +193,8 @@ def ask(question: str) -> dict:
     Pipeline complet :
     Question → LLM1 → LLM2 → MySQL → Réponse métier
     """
+    sql=None 
+    start_time = time.time()  # ← démarrage du chrono
     try:
         # Étape 1 : Analyse de l'intention
         analysis = analyze_intent(question)
@@ -193,11 +206,13 @@ def ask(question: str) -> dict:
             props_text = "\n".join(
                 f"{i+1}. {p}" for i, p in enumerate(propositions)
             )
+            duration = round(time.time() - start_time, 2)
             save_to_log({
                  "success": True,
                 "question": question,
                 "view": None,
                 "sql": None,
+                "temps_reponse": duration,
                 "response": f"🤔 **Votre question manque de détails.**\n\n"
                             f"💡 J'ai compris : *{comprehension}*\n\n"
                             f"Voici des questions plus précises que vous pourriez poser :\n\n"
@@ -216,11 +231,13 @@ def ask(question: str) -> dict:
 
         # Cas : hors périmètre
         if "error" in analysis:
+            duration = round(time.time() - start_time, 2)
             save_to_log({
                 "success": False,
                 "question": question,
                 "view": None,
                 "sql": None,
+                "temps_reponse": duration,
                 "response": "❌ Cette question est hors du périmètre du système.\n\n"
                             "Je peux répondre aux questions sur :\n"
                             "  📄 La facturation (factures, règlements, CA clients)\n"
@@ -261,11 +278,13 @@ def ask(question: str) -> dict:
                     )
 
             response_text += "💡 *Reformulez votre question avec le bon terme.*"
+            duration = round(time.time() - start_time, 2)
             save_to_log({
                 "success":  True,
                 "question": question,
                 "view":     None,
                 "sql":      None,
+                "temps_reponse": duration,
                 "response": response_text
             })
             return {
@@ -294,11 +313,13 @@ def ask(question: str) -> dict:
                         f"Périodes disponibles :\n{props_text}\n\n"
                     )
             response_text += "💡 *Reformulez votre question avec une période disponible.*"
+            duration = round(time.time() - start_time, 2)
             save_to_log({
                 "success":  True,
                 "question": question,
                 "view":     None,
                 "sql":      None,
+                "temps_reponse": duration,
                 "response": response_text
             })
             return {
@@ -339,12 +360,14 @@ def ask(question: str) -> dict:
             nbln=len_result(sql)
             response = format_response(question, sql, results)
 
+        duration = round(time.time() - start_time, 2)
         save_to_log({
             "success": True,
             "question": question,
             "view": analysis.get("view"),
             "sql": sql,
             "nombre_reele" : nbln,
+            "temps_reponse": duration,
             "results": results,
             "response": response
         })
@@ -364,19 +387,20 @@ def ask(question: str) -> dict:
 
         # Message générique → renvoyé à l'utilisateur
         user_message = "⚠️ Un problème est survenu. Veuillez contacter l'administration."
-
+        duration = round(time.time() - start_time, 2)
         save_to_log({
             "success": False,
             "question": question,
             "view": None,
-            "sql": None,
+            "sql": sql,
+            "temps_reponse": duration,
             "response":error_detail
         })
         return {
             "success": False,
             "question": question,
             "view": None,
-            "sql": None,
+            "sql": sql,
             "response": user_message
         }
     

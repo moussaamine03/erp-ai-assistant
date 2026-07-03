@@ -92,3 +92,25 @@ INNER JOIN arfamille f  ON a.IDArFamille  = f.IDArFamille
 INNER JOIN grille g     ON a.IDGrille     = g.IDGrille
 INNER JOIN tailles t    ON g.IDGrille     = t.IDGrille
 ORDER BY a.IDArticle, t.Ordre;
+
+-- ============================================================
+-- VUE 3 : vw_article_kpi_famille
+-- KPI articles agrégés par famille
+-- ============================================================
+CREATE OR REPLACE VIEW vw_article_kpi_famille AS
+SELECT
+    f.IDArFamille,
+    f.Famille                                       AS NomFamille,
+    COUNT(a.IDArticle)                              AS NombreArticles,
+    SUM(CASE a.Etat WHEN 1 THEN 1 ELSE 0 END)      AS ArticlesActifs,
+    SUM(CASE a.Etat WHEN 0 THEN 1 ELSE 0 END)      AS ArticlesInactifs,
+    ROUND(AVG(a.Prix), 3)                           AS PrixMoyen,
+    ROUND(MIN(a.Prix), 3)                           AS PrixMin,
+    ROUND(MAX(a.Prix), 3)                           AS PrixMax,
+    ROUND(AVG(a.Cadence), 2)                        AS CadenceMoyenne,
+    ROUND(AVG(a.TempsClient), 2)                    AS TempsMoyenClient,
+    COUNT(DISTINCT a.IDAr_Couleur)                  AS NombreCouleurs,
+    COUNT(DISTINCT a.IDClient)                      AS NombreClients
+FROM arfamille f
+LEFT JOIN article a ON f.IDArFamille = a.IDArFamille
+GROUP BY f.IDArFamille, f.Famille;

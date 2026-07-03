@@ -520,5 +520,43 @@
     "success": true,
     "nb_results": 5,
     "response": "📊 **Total : 5 résultats**\n  • **Entité 1** : 5 lignes\n\n\n### 🏢 Top 5 Clients par Chiffre d'Affaires (CA)\n\n- **Nombre total** : 5 résultats\n\n---\n\n#### 📊 Classement des clients\n\n| **Code Client** | **Nom Client**            | **Chiffre d'Affaires Total (€)** |\n|-----------------|---------------------------|-----------------------------------|\n| 6               | AZUR                      | 5 967 850,17                      |\n| 33              | SELMARK S.L.U             | 666 055,65                        |\n| 11              | Forum Groupe              | 529 378,99                        |\n| 35              | NIAS SPA                  | 226 861,40                        |\n| 16              | Société MAHDIA CORSETERIE | 155 221,78                        |\n\n---\n### 📊 **Synthèse globale**\n- **Total général** : 5 clients classés\n- **Top 1** : **AZUR** avec **5 967 850,17 €** (écart significatif vs. autres)."
+  },
+  {
+    "timestamp": "2026-07-03 11:45:46",
+    "question": "client",
+    "view": null,
+    "sql": null,
+    "success": true,
+    "nb_results": 0,
+    "response": "🤔 **Votre question manque de détails.**\n\n💡 J'ai compris : *L'utilisateur fait référence à un client sans préciser de contexte ou d'action souhaitée.*\n\nVoici des questions plus précises que vous pourriez poser :\n\n1. Quels sont les clients actifs dans le système ?\n2. Quel est le chiffre d'affaires total par client cette année ?\n3. Quels clients ont des impayés importants ?\n4. Combien de factures ont été émises pour chaque client depuis le début de l'année ?"
+  },
+  {
+    "timestamp": "2026-07-03 11:46:19",
+    "question": "Top 5 clients par CA",
+    "view": "vw_facturation_kpi_client",
+    "sql": "SELECT IDClient AS CodeClient, TRIM(NomClient) AS NomClient, SUM(ChiffreAffairesHT) AS ChiffreAffairesTotal FROM vw_facturation_kpi_client GROUP BY IDClient, NomClient ORDER BY ChiffreAffairesTotal DESC LIMIT 5",
+    "success": true,
+    "nb_results": 5,
+    "response": "📊 **Total : 5 résultats**\n  • **Entité 1** : 5 lignes\n\n\n### 🏢 Top 5 clients par Chiffre d'Affaires (CA)\n\n---\n#### 📌 **Top Client — AZUR**\n- **Nombre** : 1 résultat\n- **Tableau des données** :\n\n| CodeClient | NomClient       | ChiffreAffairesTotal |\n|------------|-----------------|----------------------|\n| 6          | AZUR            | 5 967 850,17 €       |\n\n---\n\n#### 📌 **2ᵉ Position — SELMARK S.L.U**\n- **Nombre** : 1 résultat\n- **Tableau des données** :\n\n| CodeClient | NomClient       | ChiffreAffairesTotal |\n|------------|-----------------|----------------------|\n| 33         | SELMARK S.L.U   | 666 055,65 €         |\n\n---\n\n#### 📌 **3ᵉ Position — Forum Groupe**\n- **Nombre** : 1 résultat\n- **Tableau des données** :\n\n| CodeClient | NomClient       | ChiffreAffairesTotal |\n|------------|-----------------|----------------------|\n| 11         | Forum Groupe    | 529 378,99 €         |\n\n---\n#### 📌 **4ᵉ Position — NIAS SPA**\n- **Nombre** : 1 résultat\n- **Tableau des données** :\n\n| CodeClient | NomClient       | ChiffreAffairesTotal |\n|------------|-----------------|----------------------|\n| 35         | NIAS SPA        | 226 861,40 €         |\n\n---\n#### 📌 **5ᵉ Position — Société MAHDIA CORSETERIE**\n- **Nombre** : 1 résultat\n- **Tableau des données** :\n\n| CodeClient | NomClient               | ChiffreAffairesTotal |\n|------------|-------------------------|----------------------|\n| 16         | Société MAHDIA CORSETERIE | 155 221,78 €       |\n\n---\n### 📊 **Synthèse globale**\n- **Total général** : 5 résultats\n- **Top 1** : AZUR domine largement avec **5 967 850,17 €** (85% du CA total).\n- **Écarts notables** :\n  - SELMARK S.L.U (2ᵉ) représente **11%** du CA.\n  - Les 3 autres clients cumulent **4%** du CA."
+  },
+  {
+    "timestamp": "2026-07-03 13:39:22",
+    "question": "top 5 client par CA",
+    "view": "vw_facturation_kpi_client",
+    "sql": "SELECT IDClient AS CodeClient, TRIM(NomClient) AS NomClient, SUM(ChiffreAffairesHT) AS ChiffreAffairesTotal FROM vw_facturation_kpi_client GROUP BY IDClient, NomClient ORDER BY ChiffreAffairesTotal DESC LIMIT 5",
+    "success": true,
+    "nb_results": 5,
+    "temps_reponse": 12.34,
+    "response": "📊 **Total : 5 résultats**\n  • **Entité 1** : 5 lignes\n\n\n### 🏢 Top 5 Clients par Chiffre d'Affaires (CA)\n\n- **Nombre total** : 5 résultats\n\n---\n\n#### 📌 Liste des clients\n\n| **Code Client** | **Nom Client**               | **Chiffre d'Affaires Total (€)** |\n|-----------------|------------------------------|----------------------------------|\n| 6               | AZUR                         | 5 967 850,17                     |\n| 33              | SELMARK S.L.U                | 666 055,65                       |\n| 11              | Forum Groupe                 | 529 378,99                       |\n| 35              | NIAS SPA                     | 226 861,40                       |\n| 16              | Société MAHDIA CORSETERIE    | 155 221,78                       |\n\n---\n### 📊 Synthèse globale\n- **Total général** : 5 résultats\n- **Top 1** : **AZUR** domine largement avec **5 967 850,17 €** (85% du CA total).\n- **Observation** : AZUR représente une part écrasante du CA, suivi d'une forte baisse pour les autres clients."
+  },
+  {
+    "timestamp": "2026-07-03 13:42:13",
+    "question": "top 5 client par CA",
+    "view": "vw_facturation_kpi_client",
+    "sql": "SELECT IDClient AS CodeClient, NomClient, SUM(ChiffreAffairesHT) AS ChiffreAffairesTotal FROM vw_facturation_kpi_client GROUP BY IDClient, NomClient ORDER BY ChiffreAffairesTotal DESC LIMIT 5",
+    "success": true,
+    "nb_results": 5,
+    "temps_reponse": 12.47,
+    "response": "📊 **Total : 5 résultats**\n  • **Entité 1** : 5 lignes\n\n\n### 🏢 Top 5 Clients par Chiffre d'Affaires (CA)\n\n- **Nombre total** : 5 résultats\n\n---\n\n#### 📊 Classement des clients\n\n| **Code Client** | **Nom Client**               | **Chiffre d'Affaires Total (€)** |\n|-----------------|------------------------------|----------------------------------|\n| 6               | AZUR                         | 5 967 850,17                     |\n| 33              | SELMARK S.L.U                | 666 055,65                       |\n| 11              | Forum Groupe                 | 529 378,99                       |\n| 35              | NIAS SPA                     | 226 861,40                       |\n| 16              | Société MAHDIA CORSETERIE    | 155 221,78                       |\n\n---\n### 📈 **Synthèse globale**\n- **Total général** : 5 clients classés\n- **Top 1** : **AZUR** domine largement avec **5 967 850,17 €** (89,5% du CA total des 5 premiers).\n- **Écarts notables** : Le 2ᵉ (SELMARK S.L.U) représente seulement **11,1%** du CA du leader."
   }
 ]

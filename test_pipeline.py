@@ -70,7 +70,7 @@ questions = [
     # "Top 5 employés par rendement en 2025"
     # "donne moi la liste des top 10 article en CA",
     # "Quel est le chiffre d'affaires total facturé à AZUR en 2025",
-    # "top 5 client par CA"
+    "top 5 client par CA"
 
 ]
 

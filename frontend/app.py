@@ -3,6 +3,7 @@ import requests
 import json
 import os
 from datetime import datetime
+import glob
 
 # ── Page config ──────────────────────────────────────────────
 st.set_page_config(
@@ -14,7 +15,7 @@ st.set_page_config(
 
 N8N_WEBHOOK_URL = "http://localhost:5678/webhook/erp-assistant"
 
-LOG_FILE = os.path.join(os.path.dirname(__file__), "../logs/ask_history.json")
+LOG_DIR = os.path.join(os.path.dirname(__file__), "../logs")
 
 # ── Session state ─────────────────────────────────────────────
 if "messages" not in st.session_state:
@@ -186,11 +187,23 @@ html, body, [data-testid="stAppViewContainer"] {{
 """, unsafe_allow_html=True)
 
 # ── Log functions ─────────────────────────────────────────────
-def load_history():
-    if not os.path.exists(LOG_FILE):
+def get_available_log_dates():
+    """Retourne la liste des dates disponibles (fichiers de log existants), triées du plus récent au plus ancien."""
+    files = glob.glob(os.path.join(LOG_DIR, "ask_history_*.json"))
+    dates = []
+    for f in files:
+        name = os.path.basename(f).replace("ask_history_", "").replace(".json", "")
+        dates.append(name)
+    return sorted(dates, reverse=True)
+def load_history(date_str: str = None):
+    """Charge l'historique d'une date donnée (par défaut : aujourd'hui)."""
+    if date_str is None:
+        date_str = datetime.now().strftime("%Y-%m-%d")
+    log_file = os.path.join(LOG_DIR, f"ask_history_{date_str}.json")
+    if not os.path.exists(log_file):
         return []
     try:
-        with open(LOG_FILE, "r", encoding="utf-8") as f:
+        with open(log_file, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception:
         return []
@@ -389,7 +402,18 @@ with tab_chat:
 # TAB 2 — HISTORIQUE
 # ══════════════════════════════════════════════════════════════
 with tab_history:
-    history = load_history()
+    available_dates = get_available_log_dates()
+    if not available_dates:
+        st.markdown(f"""
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-title">Aucun historique disponible</div>
+            <div class="empty-sub">Les questions posées apparaîtront ici automatiquement</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        selected_date = st.selectbox("📅 Sélectionner une date", available_dates, index=0)
+        history = load_history(selected_date)
 
     if not history:
         st.markdown(f"""

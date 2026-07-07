@@ -65,7 +65,7 @@ FROM article a
 INNER JOIN ar_couleur c   ON a.IDAr_Couleur  = c.IDAr_Couleur
 INNER JOIN arfamille f    ON a.IDArFamille   = f.IDArFamille
 INNER JOIN grille g       ON a.IDGrille      = g.IDGrille
-INNER JOIN  client cl      ON a.IDClient      = cl.IDClient
+INNER JOIN  client cl      ON a.IDClient      = cl.IDClient;
 
 
 -- ============================================================

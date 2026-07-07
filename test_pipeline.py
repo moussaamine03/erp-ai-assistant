@@ -65,13 +65,16 @@ questions = [
     # "Top 5 employés par rendement cette semaine",
     # "Production journalière de l'employé matricule 568",
     # "Nombre d'employés de la chaîne Houda Hajji",
-    # "Quel employé a produit le plus de pièces en 2025 ?",
+    "Quel employé a produit le plus de pièces en 2025 ?",
     # "Production hebdomadaire de l'employé BEN SGHAIER Sourour"
     # "Top 5 employés par rendement en 2025"
     # "donne moi la liste des top 10 article en CA",
     # "Quel est le chiffre d'affaires total facturé à AZUR en 2025",
     # "top 5 client par CA"
-    "Quels articles ont un prix unitaire superieur à 10 ?"
+    # "Quels articles ont un prix unitaire superieur à 10 ?"
+    # "donner moi listes des chaines de production ?"
+    # "facture"
+    # "Quelles sont les chaînes de production actives dans le système ?"
 
 ]
 

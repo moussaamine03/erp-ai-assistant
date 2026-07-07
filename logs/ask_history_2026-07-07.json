@@ -1,0 +1,182 @@
+[
+  {
+    "timestamp": "2026-07-07 12:11:27",
+    "question": "donner moi listes des chaines de production ?",
+    "view": null,
+    "sql": null,
+    "success": false,
+    "nb_results": 0,
+    "temps_reponse": 3.89,
+    "response": "❌ Erreur : 'dict' object has no attribute 'lower'"
+  },
+  {
+    "timestamp": "2026-07-07 12:13:26",
+    "question": "donner moi listes des chaines de production ?",
+    "view": null,
+    "sql": null,
+    "success": false,
+    "nb_results": 0,
+    "temps_reponse": 4.05,
+    "response": "❌ Erreur : 'dict' object has no attribute 'lower'"
+  },
+  {
+    "timestamp": "2026-07-07 12:20:17",
+    "question": "Top 5 employés par rendement en 2025",
+    "view": "vw_rh_employe",
+    "sql": "SELECT IDEmploye, NomCompletEmploye, Matricule, RendementPct, TotalPiecesJour FROM vw_rh_employe WHERE YEAR(DateLecture) = 2025 GROUP BY IDEmploye, NomCompletEmploye, Matricule",
+    "success": true,
+    "nb_results": 195,
+    "temps_reponse": 28.95,
+    "response": "📊 **Total : 195 résultats**\n  • **Entité 1** : 195 lignes\n\n\n### 🏆 Top 5 Employés par Rendement en 2025\n\n---\n\n#### 📌 **Top 5 des employés les plus performants**\n\n| **Rang** | **Nom Complet**               | **Matricule** | **Rendement (%)** | **Total Pièces/Jour** |\n|----------|-------------------------------|---------------|-------------------|-----------------------|\n| 1        | MALEK Riadh                   | 79            | 300.00            | 198                   |\n| 2        | SAAI Radhia                   | 284           | 375.00            | 750                   |\n| 3        | BEZAZI Fatma                 | 7             | 136.36            | 375                   |\n| 4        | SOULA Kaouthar                | 91            | 97.40             | 225                   |\n| 5        | BEN HAMOUDA Meriem            | 96            | 81.82             | 225                   |\n\n---\n\n### 📊 **Synthèse globale**\n- **Total général** : 195 employés\n- **Top 5** : Représentent les employés avec le rendement le plus élevé en 2025.\n- **Points clés** :\n  - **MALEK Riadh** et **SAAI Radhia** ont des rendements exceptionnels (> 300%).\n  - **BEZAZI Fatma** se distingue avec un bon équilibre entre rendement et production quotidienne.\n  - Les autres employés du top 5 ont des rendements supérieurs à 80%, indiquant une performance remarquable."
+  },
+  {
+    "timestamp": "2026-07-07 12:27:48",
+    "question": "donner moi listes des chaines de production ?",
+    "view": "vw_rh_chaine",
+    "sql": "SELECT DISTINCT NomChaine\nFROM vw_rh_chaine\nORDER BY NomChaine\nLIMIT 100",
+    "success": true,
+    "nb_results": 10,
+    "temps_reponse": 19.36,
+    "response": "📊 **Total : 10 résultats**\n\n### 🏭 **Chaînes de Production**\n\n- **Nombre total** : 10 résultats\n\n| **Nom de la Chaîne**  |\n|-----------------------|\n| Apprentis             |\n| Coupe                 |\n| Dalel                 |\n| HAMIDA                |\n| Houda Hajji           |\n| Indirect              |\n| Kalthoum              |\n| Najla                 |\n| Olfa Kh.              |\n| Souhir                |\n\n---\n### 📊 **Synthèse globale**\n- **Total général** : 10 chaînes de production listées."
+  },
+  {
+    "timestamp": "2026-07-07 13:15:52",
+    "question": "donner moi listes des chaines de production ?",
+    "view": "vw_rh_chaine",
+    "sql": "SELECT DISTINCT NomChaine\nFROM vw_rh_chaine\nLIMIT 100",
+    "success": true,
+    "nb_results": 10,
+    "temps_reponse": 18.46,
+    "response": "📊 **Total : 10 résultats**\n\n### 🏭 **Chaînes de Production**\n\n- **Nombre total** : 10 résultats\n\n| **Nom de la Chaîne**  |\n|-----------------------|\n| Olfa Kh.             |\n| Indirect             |\n| Dalel                |\n| Souhir               |\n| Apprentis            |\n| HAMIDA               |\n| Kalthoum             |\n| Houda Hajji          |\n| Najla                |\n| Coupe                |"
+  },
+  {
+    "timestamp": "2026-07-07 13:25:00",
+    "question": "azur",
+    "view": "vw_facturation_kpi_client",
+    "sql": "SELECT * FROM vw_facturation_kpi_client WHERE TRIM(NomClient) = 'AZUR'",
+    "success": true,
+    "nb_results": 1,
+    "temps_reponse": 12.12,
+    "response": "📊 **Total : 1 résultats**\n\n### 🏢 **Client** — AZUR\n- **Nombre** : 1 résultat\n| IDClient | NomClient | NombreFactures | ChiffreAffairesHT | ChiffreAffairesTTC | TotalResteARegler | NbFacturesAcquittees | NbFacturesNonAcquittees | PremiereFacture | DerniereFacture |\n|----------|-----------|----------------|-------------------|--------------------|-------------------|----------------------|-------------------------|-----------------|-----------------|\n| 6        | AZUR      | 308            | 5 967 850,17      | 5 967 850,17       | 102 789,75        | 0                    | 308                     | 2015-01-01      | 2025-12-15      |\n\n---\n### 📊 **Synthèse globale**\n- **Total général** : 1 résultat"
+  },
+  {
+    "timestamp": "2026-07-07 13:27:11",
+    "question": "les factures ",
+    "view": null,
+    "sql": null,
+    "success": true,
+    "nb_results": 0,
+    "temps_reponse": 5.01,
+    "response": "🤔 **Votre question manque de détails.**\n\n💡 J'ai compris : *L'utilisateur souhaite obtenir des informations sur les factures.*\n\nVoici des questions plus précises que vous pourriez poser :\n\n1. Quelles factures ne sont pas encore réglées ?\n2. Quel est le chiffre d'affaires du mois en cours ?\n3. Liste des factures émises ce mois-ci\n4. Quelles sont les factures dont le reste à régler est supérieur à 5 000 DT ?"
+  },
+  {
+    "timestamp": "2026-07-07 13:28:02",
+    "question": " arur ",
+    "view": null,
+    "sql": null,
+    "success": true,
+    "nb_results": 0,
+    "temps_reponse": 4.67,
+    "response": "🤔 **Votre question manque de détails.**\n\n💡 J'ai compris : *La question 'arur' est trop vague et nécessite des précisions pour identifier le domaine concerné.*\n\nVoici des questions plus précises que vous pourriez poser :\n\n1. Quelles matières premières ont été achetées ce mois-ci ?\n2. Quels articles de la famille Soutien Gorge sont actifs ?\n3. Quel est le chiffre d'affaires total du mois dernier ?\n4. Quels fournisseurs ont des impayés importants en 2025 ?"
+  },
+  {
+    "timestamp": "2026-07-07 13:28:51",
+    "question": " les clients ",
+    "view": "vw_facturation_kpi_client",
+    "sql": "SELECT * FROM vw_facturation_kpi_client",
+    "success": true,
+    "nb_results": 26,
+    "temps_reponse": 21.27,
+    "response": "📊 **Total : 26 résultats**\n  • **Entité 1** : 26 lignes\n\n\n### 🏢 Liste des Clients\n- **Nombre total** : 26 clients\n\n---\n\n| **ID Client** | **Nom Client** | **Nombre Factures** | **CA HT (TND)** | **CA TTC (TND)** | **Reste à Régler (TND)** | **Factures Non Acquittées** | **Première Facture** | **Dernière Facture** |\n|---------------|----------------|---------------------|-----------------|------------------|--------------------------|-----------------------------|----------------------|-----------------------|\n| 6             | AZUR           | 308                 | 5,967,850.17    | 5,967,850.17     | 102,789.75               | 308                         | 2015-01-01           | 2025-12-15            |\n| 10            | Natur'elle      | 8                   | 1,719.56        | 1,719.56         | 0.00                     | 8                           | 2015-01-05           | 2015-01-15            |\n| 11            | Forum Group    | 16                  | 55,839.55       | 55,839.55        | 0.00                     | 16                          | 2015-01-31           | 2017-03-06            |\n| 11            | Forum Groupe   | 52                  | 529,378.99      | 529,378.99       | 0.00                     | 52                          | 2017-04-07           | 2025-10-31            |\n| 12            | Ibtissem       | 1                   | 10.00           | 10.40            | 0.00                     | 1                           | 2015-08-03           | 2015-08-03            |\n| 13            | ISA SARL       | 1                   | 1,582.20        | 1,582.20         | 0.00                     | 1                           | 2016-04-02           | 2016-04-02            |\n| 14            | Sté ESSE ELLE  | 2                   | 6,052.30        | 6,052.30         | 0.00                     | 2                           | 2016-04-01           | 2016-04-14            |\n| 15            | A.J            | 7                   | 58,674.70       | 58,674.70        | 0.00                     | 7                           | 2016-04-21           | 2021-06-08            |\n| 16            | Société MAHDIA CORSETERIE | 15          | 155,221.78      | 155,222.18       | 0.00                     | 15                          | 2017-03-07           | 2025-05-10            |\n| 18            | La tunisienne des Machines à Coudre | 1 | 8,600.00        | 8,600.00         | 0.00                     | 1                           | 2017-07-28           | 2017-07-28            |\n| 19            | NICOLE OLIVIER S.A | 3               | 1,461.25        | 1,461.25         | 0.00                     | 3                           | 2019-02-20           | 2019-06-29            |\n| 20            | CMP            | 2                   | 14,700.00       | 14,700.00        | 0.00                     | 2                           | 2019-12-10           | 2025-10-09            |\n| 21            | DM CONFECTION  | 3                   | 26,643.25       | 26,643.25        | 0.00                     | 3                           | 2020-05-05           | 2020-06-26            |\n| 22            | Isalis         | 3                   | 12,138.00       | 12,138.00        | 0.00                     | 3                           | 2020-06-13           | 2020-06-17            |\n| 23            | Tissage Mustapha El Ajmi | 1          | 2,215.60        | 2,215.60         | 0.00                     | 1                           | 2020-08-07           | 2020-08-07            |\n| 27            | VALERY SPA     | 18                  | 28,634.17       | 28,634.17        | 0.00                     | 18                          | 2021-03-25           | 2021-09-16            |\n| 28            | ART CONFECTION 2 | 1                 | 2,264.76        | 2,264.76         | 0.00                     | 1                           | 2021-05-17           | 2021-05-17            |\n| 29            | LOOK COMPANY   | 2                   | 11,566.46       | 11,566.46        | 0.00                     | 2                           | 2021-12-31           | 2022-01-12            |\n| 30            | Ste GRUPPO MODA Monastir | 2          | 11,731.80       | 11,731.80        | 0.00                     | 2                           | 2022-03-31           | 2022-04-30            |\n| 31            | BACOVET International | 1          | 28,701.30       | 28,701.30        | 0.00                     | 1                           | 2022-06-17           | 2022-06-17            |\n| 32            | sotufam        | 2                   | 10,220.51       | 10,220.51        | 0.00                     | 2                           | 2022-06-30           | 2022-07-22            |\n| 33            | SELMARK S.L.U  | 86                  | 666,055.65      | 666,055.65       | 62,112.07                | 86                          | 2022-12-22           | 2025-12-18            |\n| 34            | CMS            | 17                  | 0.00            | 0.00             | 0.00                     | 17                          | 2023-08-15           | 2025-11-29            |\n| 35            | NIAS SPA       | 81                  | 226,861.40      | 225,626.20       | 18,917.00                | 81                          | 2024-02-15           | 2025-12-17            |\n| 36            | VOF Lingerie Triolet | 2          | 5,171.00        | 5,171.00         | 0.00                     | 2                           | 2025-04-17           | 2025-04-24            |\n| 37            | New Vision Confection | 1          | 7,872.64        | 7,872.64         | 0.00                     | 1                           | 2025-09-12           | 2025-09-12            |\n\n---\n### 📊 **Synthèse Globale**\n- **Total général** : **26 clients**\n- **Chiffre d'affaires total HT** : **8,832,128.31 TND**\n- **Chiffre d'affaires total TTC** : **8,828,787.31 TND**\n- **Reste à régler total** : **183,818.82 TND**\n- **Factures non acquittées** : **868** (sur 868 factures au total)\n- **Client avec le CA le plus élevé** : **AZUR** (5,967,850.17 TND)\n- **Client avec le plus de factures** : **SELMARK S.L.U** (86 factures)"
+  },
+  {
+    "timestamp": "2026-07-07 13:41:19",
+    "question": " les clients ",
+    "view": null,
+    "sql": null,
+    "success": true,
+    "nb_results": 0,
+    "temps_reponse": 5.09,
+    "response": "🤔 **Votre question manque de détails.**\n\n💡 J'ai compris : *L'utilisateur demande des informations sur les clients dans le système ERP.*\n\nVoici des questions plus précises que vous pourriez poser :\n\n1. Quel est le chiffre d'affaires total par client cette année ?\n2. Quels clients ont des impayés importants ?\n3. Combien de factures ont été émises pour chaque client en 2025 ?\n4. Quel client a le plus grand encours de paiement ?"
+  },
+  {
+    "timestamp": "2026-07-07 13:41:41",
+    "question": "azur",
+    "view": null,
+    "sql": null,
+    "success": true,
+    "nb_results": 0,
+    "temps_reponse": 5.02,
+    "response": "🤔 **Votre question manque de détails.**\n\n💡 J'ai compris : *L'utilisateur a mentionné 'Azur', qui semble être un nom de client ou de fournisseur.*\n\nVoici des questions plus précises que vous pourriez poser :\n\n1. Quels articles sont associés au client AZUR ?\n2. Quel est le chiffre d'affaires total facturé au client AZUR cette année ?\n3. Quelles factures ont été émises pour le client AZUR ce mois-ci ?\n4. Quel est le total des achats effectués chez le fournisseur AZUR ?"
+  },
+  {
+    "timestamp": "2026-07-07 13:42:21",
+    "question": "donner moi listes des chaines de production ?",
+    "view": null,
+    "sql": null,
+    "success": true,
+    "nb_results": 0,
+    "temps_reponse": 4.94,
+    "response": "🤔 **Votre question manque de détails.**\n\n💡 J'ai compris : *L'utilisateur souhaite obtenir la liste des chaînes de production disponibles dans le système.*\n\nVoici des questions plus précises que vous pourriez poser :\n\n1. Quelles sont les chaînes de production actives dans le système ?\n2. Liste des chaînes de montage avec leur production totale ce mois ?\n3. Quelles chaînes de production existent dans l'ERP ?\n4. Combien de chaînes de production sont configurées dans le système ?"
+  },
+  {
+    "timestamp": "2026-07-07 13:43:08",
+    "question": "Quelles sont les chaînes de production actives dans le système ?",
+    "view": null,
+    "sql": null,
+    "success": true,
+    "nb_results": 0,
+    "temps_reponse": 4.9,
+    "response": "🤔 **Votre question manque de détails.**\n\n💡 J'ai compris : *L'utilisateur souhaite connaître les chaînes de production actives dans le système.*\n\nVoici des questions plus précises que vous pourriez poser :\n\n1. Quelles chaînes de production sont actives dans le système ?\n2. Liste des chaînes de production avec leur statut d'activité.\n3. Quelles chaînes de production ont une production enregistrée ce mois ?\n4. Combien de chaînes de production sont actuellement actives ?"
+  },
+  {
+    "timestamp": "2026-07-07 13:44:34",
+    "question": "Quelles sont les chaînes de production actives dans le système ?",
+    "view": "vw_rh_chaine",
+    "sql": "SELECT DISTINCT NomChaine\nFROM vw_rh_chaine\nWHERE 1=1\nLIMIT 100",
+    "success": true,
+    "nb_results": 10,
+    "temps_reponse": 18.57,
+    "response": "📊 **Total : 10 résultats**\n\n### 🏭 **Chaînes de production actives**\n\n- **Nombre total** : 10 résultats\n\n| **Nom de la chaîne**  |\n|-----------------------|\n| Olfa Kh.             |\n| Indirect             |\n| Dalel                |\n| Souhir               |\n| Apprentis            |\n| HAMIDA               |\n| Kalthoum             |\n| Houda Hajji          |\n| Najla                |\n| Coupe                |\n\n---\n### 📊 **Synthèse globale**\n- **Total général** : 10 chaînes actives"
+  },
+  {
+    "timestamp": "2026-07-07 13:45:20",
+    "question": "azur",
+    "view": "vw_facturation_kpi_client",
+    "sql": "SELECT * FROM vw_facturation_kpi_client WHERE TRIM(NomClient) = 'AZUR'",
+    "success": true,
+    "nb_results": 1,
+    "temps_reponse": 12.61,
+    "response": "📊 **Total : 1 résultats**\n\n### 🏢 **Client** — AZUR\n- **Nombre** : 1 résultat\n- **Détails** :\n\n| IDClient | NomClient | NombreFactures | ChiffreAffairesHT | ChiffreAffairesTTC | TotalResteARegler | NbFacturesAcquittees | NbFacturesNonAcquittees | PremiereFacture | DerniereFacture |\n|----------|-----------|----------------|-------------------|--------------------|-------------------|----------------------|-------------------------|-----------------|-----------------|\n| 6        | AZUR      | 308            | 5 967 850,17      | 5 967 850,17       | 102 789,75        | 0                    | 308                     | 2015-01-01      | 2025-12-15      |\n\n---\n### 📊 **Synthèse globale**\n- **Total général** : 1 client\n- **Points clés** :\n  - **100% des factures sont impayées** (308/308).\n  - **CA HT/TTC identique** (pas de TVA apparente).\n  - **Dernière facture récente** (2025-12-15)."
+  },
+  {
+    "timestamp": "2026-07-07 13:47:04",
+    "question": "facture",
+    "view": null,
+    "sql": null,
+    "success": true,
+    "nb_results": 0,
+    "temps_reponse": 4.9,
+    "response": "🤔 **Votre question manque de détails.**\n\n💡 J'ai compris : *L'utilisateur demande des informations sur les factures sans préciser le contexte.*\n\nVoici des questions plus précises que vous pourriez poser :\n\n1. Quelles factures ne sont pas encore réglées ?\n2. Quel est le chiffre d'affaires du mois en cours ?\n3. Liste des factures émises ce mois-ci\n4. Quels sont les clients avec des impayés importants ?"
+  },
+  {
+    "timestamp": "2026-07-07 14:01:47",
+    "question": "Quel employé a produit le plus de pièces en 2025 ?",
+    "view": "vw_rh_employe",
+    "sql": "SELECT IDEmploye, NomCompletEmploye, Matricule, TotalPiecesJour FROM vw_rh_employe WHERE YEAR(DateLecture) = 2025 GROUP BY IDEmploye, NomCompletEmploye, Matricule ORDER BY TotalPiecesJour DESC LIMIT 1",
+    "success": true,
+    "nb_results": 1,
+    "temps_reponse": 22.88,
+    "response": "📊 **Total : 1 résultats**\n  • **Entité 1** : 1 lignes\n\n\n### 👨‍🔧 **Employé** — Productivité en 2025\n\n- **Nombre** : 1 résultat\n\n| **ID Employé** | **Nom Complet**       | **Matricule** | **Total Pièces (2025)** |\n|----------------|-----------------------|---------------|-------------------------|\n| 781            | BEN FRADJ Nahed       | 586           | 1234                    |\n\n---\n### 📊 **Synthèse globale**\n- **Total général** : 1 employé\n- **Top producteur** : **BEN FRADJ Nahed** avec **1234 pièces** en 2025 🏆"
+  },
+  {
+    "timestamp": "2026-07-07 14:06:23",
+    "question": "Quel employé a produit le plus de pièces en 2025 ?",
+    "view": "vw_rh_employe",
+    "sql": "SELECT IDEmploye, NomCompletEmploye, Matricule, TotalPiecesJour FROM vw_rh_employe WHERE YEAR(DateLecture) = 2025 GROUP BY IDEmploye, NomCompletEmploye, Matricule ORDER BY TotalPiecesJour DESC LIMIT 1",
+    "success": true,
+    "nb_results": 1,
+    "temps_reponse": 22.71,
+    "response": "📊 **Total : 1 résultats**\n  • **Entité 1** : 1 lignes\n\n\n### 👷 **Employé** — Productivité en 2025\n\n- **Nombre** : 1 résultat\n\n| **ID Employé** | **Nom Complet**       | **Matricule** | **Total Pièces (2025)** |\n|----------------|-----------------------|---------------|-------------------------|\n| 781            | BEN FRADJ Nahed       | 586           | 1234                    |\n\n---\n### 📊 **Synthèse globale**\n- **Total général** : 1 résultat\n- **Top producteur** : **BEN FRADJ Nahed** avec **1 234 pièces** en 2025 🏆"
+  }
+]

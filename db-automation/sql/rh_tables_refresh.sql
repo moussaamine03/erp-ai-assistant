@@ -6,8 +6,8 @@
 SET NAMES utf8mb4;
 
 -- ---------- rh_employe_tbl ----------
-DROP TABLE IF EXISTS rh_employe_tbl;
-CREATE TABLE rh_employe_tbl AS
+DROP TABLE IF EXISTS vw_rh_employe;
+CREATE TABLE vw_rh_employe AS
 WITH of_par_jour AS (
     SELECT l.IDEmploye, l.Date, SUM(of2.Quantite) AS TotalQuantiteOF
     FROM (
@@ -45,13 +45,13 @@ GROUP BY l.IDEmploye, e.Nom, e.Prenom, e.Matricule, e.Specialite,
          e.Sexe, e.Etat, e.TauxHoraire, e.DateEmbauche,
          l.IDChaineMontage, cm.ChaineMontage, cm.Code, l.Date, oj.TotalQuantiteOF;
 
-ALTER TABLE rh_employe_tbl
+ALTER TABLE vw_rh_employe
     ADD PRIMARY KEY (IDEmploye, DateLecture, IDChaineMontage),
     ADD INDEX idx_date (DateLecture);
 
 -- ---------- rh_chaine_tbl ----------
-DROP TABLE IF EXISTS rh_chaine_tbl;
-CREATE TABLE rh_chaine_tbl AS
+DROP TABLE IF EXISTS vw_rh_chaine;
+CREATE TABLE vw_rh_chaine AS
 WITH of_par_jour_chaine AS (
     SELECT l.IDChaineMontage, l.Date, SUM(of2.Quantite) AS TotalQuantiteOF
     FROM (
@@ -84,11 +84,11 @@ WHERE l.Date > '2025-01-01'
 GROUP BY l.IDChaineMontage, cm.ChaineMontage, cm.Code,
          l.Date, of2.OFAbrication, of2.Etat, oj.TotalQuantiteOF;
 
-ALTER TABLE rh_chaine_tbl ADD INDEX idx_chaine_date (IDChaineMontage, DateLecture);
+ALTER TABLE vw_rh_chaine ADD INDEX idx_chaine_date (IDChaineMontage, DateLecture);
 
 -- ---------- rh_of_tbl ----------
-DROP TABLE IF EXISTS rh_of_tbl;
-CREATE TABLE rh_of_tbl AS
+DROP TABLE IF EXISTS vw_rh_of;
+CREATE TABLE vw_rh_of AS
 SELECT
     l.IDOFabrication,
     TRIM(of2.OFAbrication) AS NumeroOF,
@@ -115,11 +115,11 @@ GROUP BY l.IDOFabrication, of2.OFAbrication, of2.DtDebut, of2.DtFin,
          of2.Quantite, of2.QtteLct, of2.Etat, l.IDChaineMontage, cm.ChaineMontage,
          l.IDOperation, op.Operation, op.Code, op.Temps, l.IDGamme, g.Gamme, g.TpsGamme;
 
-ALTER TABLE rh_of_tbl ADD PRIMARY KEY (IDOFabrication, IDOperation, IDChaineMontage, IDGamme);
+ALTER TABLE vw_rh_of ADD PRIMARY KEY (IDOFabrication, IDOperation, IDChaineMontage, IDGamme);
 
 -- ---------- rh_production_tbl ----------
-DROP TABLE IF EXISTS rh_production_tbl;
-CREATE TABLE rh_production_tbl AS
+DROP TABLE IF EXISTS vw_rh_production;
+CREATE TABLE vw_rh_production AS
 SELECT
     l.IDLectures,
     l.Date AS DateLecture, YEAR(l.Date) AS Annee, MONTH(l.Date) AS Mois, WEEK(l.Date) AS Semaine,
@@ -151,7 +151,7 @@ INNER JOIN operation op ON l.IDOperation = op.IDOperation AND l.IDOperation > 0
 INNER JOIN gamme g ON l.IDGamme = g.IDGamme AND l.IDGamme > 0
 WHERE l.Date > '2025-01-01';
 
-ALTER TABLE rh_production_tbl
+ALTER TABLE vw_rh_production
     ADD PRIMARY KEY (IDLectures),
     ADD INDEX idx_emp_date (IDEmploye, DateLecture),
     ADD INDEX idx_of (IDOFabrication);

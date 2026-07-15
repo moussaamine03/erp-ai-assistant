@@ -22,7 +22,7 @@ SET NAMES utf8mb4;
 -- Tables sources : facture, lignefac
 -- ============================================================
 
-CREATE OR REPLACE VIEW vw_facturation_aut AS
+CREATE OR REPLACE VIEW vw_facturation AS
 SELECT
     -- ── Entête facture ──────────────────────────────────────
     f.IDFacture,
@@ -117,7 +117,7 @@ FROM facture f
 LEFT JOIN lignefac lf ON lf.IDFacture = f.IDFacture;
 
 
-CREATE OR REPLACE VIEW vw_facturation_entetes_aut AS
+CREATE OR REPLACE VIEW vw_facturation_entetes AS
 SELECT
     f.IDFacture,
     f.LibFacture                                    AS NumeroFacture,
@@ -155,7 +155,7 @@ SELECT
 FROM facture f;
 
 
-CREATE OR REPLACE VIEW vw_facturation_kpi_client_aut AS
+CREATE OR REPLACE VIEW vw_facturation_kpi_client AS
 SELECT
     f.IDClient,
     f.Client                                        AS NomClient,
@@ -176,7 +176,7 @@ GROUP BY f.IDClient, f.Client;
 -- Tables sources : article, ar_couleur, arfamille, grille, client, tailles
 -- ============================================================
 
-CREATE OR REPLACE VIEW vw_article_aut AS
+CREATE OR REPLACE VIEW vw_article AS
 SELECT
     a.IDArticle,
     a.Code                                          AS CodeArticle,
@@ -236,7 +236,7 @@ INNER JOIN grille g       ON a.IDGrille      = g.IDGrille
 INNER JOIN  client cl      ON a.IDClient      = cl.IDClient;
 
 
-CREATE OR REPLACE VIEW vw_article_tailles_aut AS
+CREATE OR REPLACE VIEW vw_article_tailles AS
 SELECT
     a.IDArticle,
     a.Code                                          AS CodeArticle,
@@ -257,7 +257,7 @@ INNER JOIN tailles t    ON g.IDGrille     = t.IDGrille
 ORDER BY a.IDArticle, t.Ordre;
 
 
-CREATE OR REPLACE VIEW vw_article_kpi_famille_aut AS
+CREATE OR REPLACE VIEW vw_article_kpi_famille AS
 SELECT
     f.IDArFamille,
     f.Famille                                       AS NomFamille,
@@ -281,7 +281,7 @@ GROUP BY f.IDArFamille, f.Famille;
 -- Tables sources : achat, ligneachat, fournisseur, mp
 -- ============================================================
 
-CREATE OR REPLACE VIEW vw_achat_aut AS
+CREATE OR REPLACE VIEW vw_achat AS
 SELECT
     -- Entête achat
     a.IDAchat,
@@ -359,7 +359,7 @@ INNER JOIN fournisseur f  ON a.IDFournisseur = f.IDFournisseur
 INNER JOIN  mp             ON la.IDMP         = mp.IDMP;
 
 
-CREATE OR REPLACE VIEW vw_achat_entetes_aut AS
+CREATE OR REPLACE VIEW vw_achat_entetes AS
 SELECT
     a.IDAchat,
     a.LibAchat                                          AS NumeroAchat,
@@ -399,7 +399,7 @@ FROM achat a
 INNER JOIN fournisseur f ON a.IDFournisseur = f.IDFournisseur;
 
 
-CREATE OR REPLACE VIEW vw_achat_kpi_fournisseur_aut AS
+CREATE OR REPLACE VIEW vw_achat_kpi_fournisseur AS
 SELECT
     a.IDFournisseur,
     TRIM(f.Fournisseur)                                 AS NomFournisseur,
@@ -423,7 +423,7 @@ GROUP BY a.IDFournisseur, f.Pays, f.Fournisseur;
 -- Dépend de vw_facturation et vw_article, créées ci-dessus.
 -- ============================================================
 
-CREATE OR REPLACE VIEW vw_facturation_detail_article_aut AS
+CREATE OR REPLACE VIEW vw_facturation_detail_article AS
 SELECT
     -- Infos facture
     f.IDFacture,
@@ -460,6 +460,6 @@ SELECT
     a.ValeurTotalMP,
     a.TypeProduit,
     a.NatureArticle
-FROM vw_facturation_aut f
-INNER JOIN vw_article_aut a ON f.IDArticle = a.IDArticle
+FROM vw_facturation f
+INNER JOIN vw_article a ON f.IDArticle = a.IDArticle
 ORDER BY f.IDArticle, f.IDFacture, f.IDLigneFac;

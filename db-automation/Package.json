@@ -1,0 +1,14 @@
+{
+  "name": "db-automation",
+  "version": "1.0.0",
+  "description": "Orchestration cross-platform des vues et tables SQL (run_sql.js + PM2)",
+  "main": "run_sql.js",
+  "scripts": {
+    "views:startup": "node run_sql.js sql/views_startup.sql",
+    "rh:refresh": "node run_sql.js sql/rh_tables_refresh.sql"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.11.0"
+  }
+}

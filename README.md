@@ -111,7 +111,6 @@ L'ERP AI Copilot est un assistant conversationnel qui permet aux utilisateurs d'
 | DBeaver | Administration et gestion des vues SQL |
 
 ---
-
 ## 📁 Structure du projet
 
 ```
@@ -135,17 +134,18 @@ erp-ai-assistant/
 │   └── main.py                  # FastAPI endpoints
 ├── frontend/
 │   └── app.py                   # Interface Streamlit
-├── sql/
-│   ├── vw_facturation.sql
-│   ├── vw_article.sql
-│   ├── vw_facturation_detail_article.sql
-│   ├── vw_achat.sql
-│   └── vw_rh_v2.sql
+├── db-automation/               # Orchestration SQL (vues + tables RH)
+│   ├── run_sql.js               # Exécuteur SQL cross-platform (remplace .sh/.ps1)
+│   ├── package.json
+│   ├── .env                     # Identifiants MySQL (propre à db-automation)
+│   └── sql/
+│       ├── views_startup.sql        # Vues Facturation, Article, Achat
+│       └── rh_tables_refresh.sql    # Tables RH_Production (refresh quotidien)
 ├── logs/
 │   └── ask_history.json         # Historique des interactions
 ├── my_workflow.json             # Workflow n8n à importer
-├── ecosystem.config.js          # Configuration PM2
-├── .env                         # Variables d'environnement
+├── ecosystem.config.js          # Configuration PM2 (backend, frontend, n8n, vues, RH)
+├── .env                         # Variables d'environnement (backend)
 ├── requirements.txt
 └── README.md
 ```
@@ -231,7 +231,6 @@ Question utilisateur
 ```
 
 ---
-
 ## 🚀 Installation
 
 ### 1. Cloner et créer l'environnement
@@ -252,7 +251,7 @@ pip install -r requirements.txt
 
 ### 3. Configurer les variables d'environnement
 
-Créer le fichier `.env` :
+Créer le fichier `.env` à la racine :
 
 ```env
 # Mistral API
@@ -266,17 +265,27 @@ DB_USER=root
 DB_PASSWORD=votre_mot_de_passe
 ```
 
-### 4. Créer les vues SQL
+### 4. Créer les vues et tables SQL (via db-automation)
 
-Exécuter dans DBeaver dans l'ordre :
+Les vues et tables ne sont plus créées manuellement dans DBeaver — `db-automation` s'en charge de façon reproductible sur Windows comme sur Linux.
 
 ```bash
-sql/vw_facturation.sql
-sql/vw_article.sql
-sql/vw_facturation_detail_article.sql
-sql/vw_achat.sql
-sql/vw_rh.sql
+cd db-automation
+npm install
+cp .env.example .env      # remplir avec les identifiants MySQL (peuvent être identiques au .env racine)
 ```
+
+Puis exécuter :
+
+```bash
+# Vues métier : Facturation, Article, Achat
+node run_sql.js sql/views_startup.sql
+
+# Tables RH_Production (matérialisées, pas des vues)
+node run_sql.js sql/rh_tables_refresh.sql
+```
+
+> Ces deux commandes sont idempotentes : elles peuvent être rejouées sans risque. `views_startup.sql` recrée les vues à chaque lancement du projet ; `rh_tables_refresh.sql` reconstruit les tables RH et sera rafraîchi automatiquement chaque jour via PM2 (voir section Lancement).
 
 ### 5. Installer et configurer n8n
 
@@ -311,12 +320,11 @@ Le fichier `my_workflow.json` à la racine du projet contient le workflow n8n pr
 > ⚠️ Le webhook n8n sera disponible sur le port **5678** par défaut. Si ce port est occupé, n8n en choisira un autre — vérifier le terminal au démarrage.
 
 ---
-
 ## ▶️ Lancement
 
 ### Option 1 — Manuel (test / développement)
 
-Démarrer les 3 services dans des terminaux séparés :
+Démarrer les services dans des terminaux séparés :
 
 ```bash
 # Terminal 1 — n8n
@@ -333,14 +341,24 @@ uvicorn backend.main:app --host 0.0.0.0 --port 8000
 streamlit run frontend/app.py --server.port 8501 --server.address 0.0.0.0
 ```
 
+> Les vues et tables SQL (`db-automation`) doivent avoir été exécutées au moins une fois avant de démarrer le backend (voir Installation étape 4). En mode manuel, il n'y a pas de rafraîchissement automatique quotidien des tables RH — relancer `node run_sql.js sql/rh_tables_refresh.sql` manuellement si besoin, ou utiliser l'Option 2 (PM2) pour l'automatiser.
+
 Ouvrir : **http://localhost:8501** (local) ou **http://IP_DU_SERVEUR:8501** (serveur)
 
 ### Option 2 — PM2 (production / serveur)
 
-Le fichier `ecosystem.config.js` à la racine du projet configure les 3 services pour PM2.
+Le fichier `ecosystem.config.js` à la racine du projet configure **5 process** PM2 :
+
+| Process | Rôle | Déclenchement |
+|---|---|---|
+| `views-startup` | Recrée les vues Facturation/Article/Achat | Une fois, au lancement |
+| `rh-refresh` | Reconstruit les tables RH_Production | Tous les jours à 02:00 |
+| `erp-backend` | API FastAPI | Continu (autorestart) |
+| `erp-frontend` | Interface Streamlit | Continu (autorestart) |
+| `erp-n8n` | Serveur n8n | Continu (autorestart) |
 
 ```bash
-# Lancer tous les services
+# Lancer tous les services (ordre respecté : vues/tables SQL avant backend/frontend)
 cd erp-ai-assistant
 pm2 start ecosystem.config.js
 
@@ -349,11 +367,14 @@ pm2 status
 
 # Voir les logs
 pm2 logs
+pm2 logs views-startup
+pm2 logs rh-refresh
 
 # Redémarrer un service
 pm2 restart erp-backend
 pm2 restart erp-frontend
 pm2 restart erp-n8n
+pm2 restart rh-refresh      # forcer un refresh RH immédiat, hors planning 02:00
 
 # Arrêter tous les services
 pm2 stop all
@@ -364,6 +385,8 @@ pm2 startup
 ```
 
 > ⚠️ Les ports par défaut dans `ecosystem.config.js` sont **8000** (FastAPI), **8501** (Streamlit) et **5678** (n8n). Si tu changes un port, pense à mettre à jour le node HTTP Request dans le workflow n8n.
+> 
+> ⚠️ `views-startup` et `rh-refresh` s'exécutent puis se terminent (`autorestart: false`) — les voir en statut `stopped` dans `pm2 status` est normal, ce n'est pas une erreur.
 
 ---
 
